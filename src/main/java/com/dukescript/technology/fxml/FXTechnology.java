@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.dukescript.technology.fxml;
 
 import java.util.HashMap;
@@ -14,17 +9,15 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import org.netbeans.html.context.spi.Contexts;
 import org.netbeans.html.json.spi.FunctionBinding;
 import org.netbeans.html.json.spi.PropertyBinding;
 import org.netbeans.html.json.spi.Technology;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author antonepple
  */
-public final class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
+public final class FXTechnology implements Technology.BatchInit<Object> {
 
     @Override
     public OMap wrapModel(Object model, PropertyBinding[] propArr, FunctionBinding[] funcArr) {
@@ -42,22 +35,22 @@ public final class FXTechnology implements Technology.BatchInit<FXTechnology.OMa
     }
 
     @Override
-    public void bind(PropertyBinding b, Object model, FXTechnology.OMap data) {
+    public void bind(PropertyBinding b, Object model, Object data) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void valueHasMutated(OMap data, String propertyName) {
-        data.fire(propertyName);
+    public void valueHasMutated(Object data, String propertyName) {
+        ((OMap)data).fire(propertyName);
     }
 
     @Override
-    public void expose(FunctionBinding fb, Object model, OMap d) {
+    public void expose(FunctionBinding fb, Object model, Object d) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void applyBindings(OMap data) {
+    public void applyBindings(Object data) {
         throw new UnsupportedOperationException();
     }
 
@@ -71,7 +64,7 @@ public final class FXTechnology implements Technology.BatchInit<FXTechnology.OMa
         throw new UnsupportedOperationException();
     }
 
-    public static class OMap extends HashMap<String, Object> implements ObservableMap<String, Object> {
+    private static class OMap extends HashMap<String, Object> implements ObservableMap<String, Object> {
 
         private List<MapChangeListener<? super String, Object>> listeners = new CopyOnWriteArrayList<>();
         private PropertyBinding[] propArr;
@@ -152,13 +145,4 @@ public final class FXTechnology implements Technology.BatchInit<FXTechnology.OMa
         }
     }
 
-    @ServiceProvider(service = Contexts.Provider.class)
-    public static class Bla implements Contexts.Provider {
-
-        @Override
-        public void fillContext(Contexts.Builder context, Class<?> requestor) {
-            context.register(Technology.class, new FXTechnology(), 10);
-        }
-
-    }
 }
