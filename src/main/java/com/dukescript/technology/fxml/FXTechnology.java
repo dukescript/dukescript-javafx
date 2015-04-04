@@ -9,6 +9,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import org.netbeans.html.context.spi.Contexts;
 import org.netbeans.html.json.spi.FunctionBinding;
 import org.netbeans.html.json.spi.PropertyBinding;
 import org.netbeans.html.json.spi.Technology;
@@ -17,7 +18,8 @@ import org.netbeans.html.json.spi.Technology;
  *
  * @author antonepple
  */
-public final class FXTechnology implements Technology.BatchInit<Object> {
+@Contexts.Id("fxml")
+final class FXTechnology implements Technology.BatchInit<Object> {
 
     @Override
     public OMap wrapModel(Object model, PropertyBinding[] propArr, FunctionBinding[] funcArr) {
