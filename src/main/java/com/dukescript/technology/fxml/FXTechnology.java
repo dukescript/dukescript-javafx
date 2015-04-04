@@ -24,7 +24,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author antonepple
  */
-public class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
+public final class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
 
     @Override
     public OMap wrapModel(Object model, PropertyBinding[] propArr, FunctionBinding[] funcArr) {
@@ -33,17 +33,17 @@ public class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
 
     @Override
     public OMap wrapModel(Object model) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public <M> M toModel(Class<M> modelClass, Object data) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void bind(PropertyBinding b, Object model, FXTechnology.OMap data) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -53,12 +53,12 @@ public class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
 
     @Override
     public void expose(FunctionBinding fb, Object model, OMap d) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void applyBindings(OMap data) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
 
     @Override
     public void runSafe(Runnable r) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException();
     }
 
     public static class OMap extends HashMap<String, Object> implements ObservableMap<String, Object> {
@@ -105,12 +105,12 @@ public class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
 
                     @Override
                     public boolean wasAdded() {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                        throw new UnsupportedOperationException();
                     }
 
                     @Override
                     public boolean wasRemoved() {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                        throw new UnsupportedOperationException();
                     }
 
                     @Override
@@ -120,12 +120,12 @@ public class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
 
                     @Override
                     public Object getValueAdded() {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                        throw new UnsupportedOperationException();
                     }
 
                     @Override
                     public Object getValueRemoved() {
-                        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                        throw new UnsupportedOperationException();
                     }
                 });
             }
@@ -143,12 +143,12 @@ public class FXTechnology implements Technology.BatchInit<FXTechnology.OMap> {
 
         @Override
         public void addListener(InvalidationListener listener) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException();
         }
 
         @Override
         public void removeListener(InvalidationListener listener) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            throw new UnsupportedOperationException();
         }
     }
 
