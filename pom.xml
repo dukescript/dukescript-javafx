@@ -7,17 +7,52 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>dukescript-fxml</name>
+    <name>DukeScript and FXML UI</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.dukescript.technology.fxml.MainApp</mainClass>
     </properties>
 
-    <organization>
-        <!-- Used as the 'Vendor' for JNLP generation -->
-        <name>Your Organisation</name>
-    </organization>
+    <url>http://dukescript.com</url>
+    <developers>
+        <developer>
+            <id>eppleton</id>
+            <name>Anton Epple</name>
+            <email>dukescript@eppleton.de</email>
+            <organization>Eppleton IT Consulting</organization>
+            <organizationUrl>http://www.eppleton.de</organizationUrl>
+            <roles>
+                <role>Project-Administrator</role>
+                <role>Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+    <description>DukeScript MVVM with JavaFX FXML based UI</description>
+    <licenses>
+        <license>
+            <name>cddl_v1</name>
+            <url>http://opensource.org/licenses/CDDL-1.0</url>
+        </license>
+    </licenses>
+    
+    <scm>
+        <connection>scm:git:https://github.com/dukescript/dukescript-javafx.git</connection>
+        <url>https://github.com/dukescript/dukescript-javafx.git</url>
+        <developerConnection>scm:git:https://github.com/dukescript/dukescript-javafx.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    
+    <repositories>
+        <repository>
+            <id>nb</id>
+            <name>NetBeans</name>
+            <url>http://bits.netbeans.org/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -39,46 +74,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-                <executions>
-                    <execution>
-                        <id>unpack-dependencies</id>
-                        
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>${java.home}/../bin/javafxpackager</executable>
-                            <arguments>
-                                <argument>-createjar</argument>
-                                <argument>-nocss2bin</argument>
-                                <argument>-appclass</argument>
-                                <argument>${mainClass}</argument>
-                                <argument>-srcdir</argument>
-                                <argument>${project.build.directory}/classes</argument>
-                                <argument>-outdir</argument>
-                                <argument>${project.build.directory}</argument>
-                                <argument>-outfile</argument>
-                                <argument>${project.build.finalName}.jar</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-cli</id>
-                        <goals>
-                            <goal>exec</goal>                            
-                        </goals>
-                        <configuration>
-                            <executable>${java.home}/bin/java</executable>
-                            <commandlineArgs>${runfx.args}</commandlineArgs>
-                        </configuration>
-                    </execution>
-                </executions>  
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -172,11 +167,41 @@
             <type>jar</type>
         </dependency>
     </dependencies>
-    <repositories>
-        <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>http://bits.netbeans.org/nexus/content/groups/netbeans/</url>
-        </repository>
-    </repositories>
+    <profiles>
+        <profile>
+            <id>license</id>
+            <activation>
+                <property>
+                    <name>!skipLicenses</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>1.7</version>
+                        <configuration>
+                            <inceptionYear>2015</inceptionYear>
+                            <organizationName>Eppleton IT Consulting</organizationName>
+                            <licenseName>cddl_v1</licenseName>
+                            <failOnMissingHeader>true</failOnMissingHeader>
+                            <roots>
+                                <root>src</root>
+                            </roots>  
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>check-file-header</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+    </profiles>
 </project>
