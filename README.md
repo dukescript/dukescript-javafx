@@ -1,4 +1,4 @@
-Use __FXML__ to define your __UI__ and use [@Model](http://http://bits.netbeans.org/html+java/1.1/net/java/html/json/Model.html)
+Use __FXML__ to define your __UI__ and use [@Model](http://bits.netbeans.org/html+java/1.1/net/java/html/json/Model.html)
 to define your __MVVM__ logic. To use the system in your __JavaFX__ application, create standard Scene.xml file:
 
 ```xml
@@ -20,7 +20,7 @@ to define your __MVVM__ logic. To use the system in your __JavaFX__ application,
 ```
 
 The FXML is referencing properties of your controller class, which can be easily defined using 
-[@Model](http://http://bits.netbeans.org/html+java/1.1/net/java/html/json/Model.html) annotation:
+[@Model](http://bits.netbeans.org/html+java/1.1/net/java/html/json/Model.html) annotation:
 
 ```java
 @Model(className = "ViewModel", properties = {
