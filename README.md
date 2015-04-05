@@ -19,7 +19,8 @@ to define your __MVVM__ logic. To use the system in your __JavaFX__ application,
 </AnchorPane>
 ```
 
-The FXML is referencing properties of your controller class, which can be easily defined using @Model annotation:
+The FXML is referencing properties of your controller class, which can be easily defined using 
+[@Model](http://http://bits.netbeans.org/html+java/1.1/net/java/html/json/Model.html) annotation:
 
 ```java
 @Model(className = "ViewModel", properties = {
@@ -35,7 +36,10 @@ public class SimpleController {
 }
 ```
 
-Such model carries two properties and a function handleButtonAction which acts on the model and gets invoked by the button defined in the FXML file once it is clicked. At the end, one just instantiates the whole scene and binds it together with the controller:
+Such model carries two properties and a function __handleButtonAction__
+which acts on the model and gets invoked by the button defined in the __FXML__
+file once it is clicked. At the end, one just instantiates 
+the whole scene and binds it together with the controller:
 
 ```java
 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("SimpleScene.fxml"));
@@ -44,4 +48,4 @@ fxmlLoader.setController(Models.toRaw(viewModel));
 Parent rootNode = fxmlLoader.load();
 ```
 
-Your model view view model completely separated from the JavaFX UI definition has just become reality!
+Your _model view view model_ completely separated from the __JavaFX UI__ definition has just become reality!
