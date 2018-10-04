@@ -1,69 +1,78 @@
 package com.dukescript.demo.javafx.webui;
 
-import net.java.html.json.ComputedProperty;
-import net.java.html.json.Function;
-import net.java.html.json.Model;
-import net.java.html.json.Property;
-import net.java.html.json.ModelOperation;
-import net.java.html.json.OnPropertyChange;
+import java.util.Arrays;
+import java.util.List;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.webui.FXBeanInfo;
+import net.java.html.json.Models;
 
-@Model(className = "Data", targetId = "", instance = true, properties = {
-    @Property(name = "message", type = String.class),
-    @Property(name = "rotating", type = boolean.class)
-})
-final class DataModel {
-    private PlatformServices services;
+final class DataModel implements FXBeanInfo.Provider {
+    final ObjectProperty<String> message = new SimpleObjectProperty<>();
+    final ObservableValue<List<String>> words = new ObjectBinding<List<String>>() {
+        @Override
+        protected List<String> computeValue() {
+            return words(message.get());
+        }
+    };
+    final BooleanProperty rotating = new SimpleBooleanProperty();
+    final Property<EventHandler<ActionEvent>> turnAnimationOn = new SimpleObjectProperty<>();
+    final Property<EventHandler<ActionEvent>> turnAnimationOff = new SimpleObjectProperty<>();
+    final Property<EventHandler<ActionEvent>> rotate5s = new SimpleObjectProperty<>();
+    final Property<EventHandler<ActionEvent>> showScreenSize = new SimpleObjectProperty<>();
+    final FXBeanInfo info = FXBeanInfo.create(this).
+            property("message", message).
+            property("rotating", rotating).
+            property("words", words).
+            action("turnAnimationOn", turnAnimationOn).
+            action("turnAnimationOn", turnAnimationOff).
+            action("rotate5s", rotate5s).
+            action("showScreenSize", showScreenSize).
+            build();
 
-    @ComputedProperty static java.util.List<String> words(String message) {
+    public DataModel() {
+        turnAnimationOn.setValue((event) -> rotating.set(true));
+        turnAnimationOff.setValue((event) -> rotating.set(false));
+        rotate5s.setValue((event) -> {
+            rotating.set(true);
+            java.util.Timer timer = new java.util.Timer("Rotates a while");
+            timer.schedule(new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    rotating.set(false);
+                }
+            }, 5000);
+        });
+        showScreenSize.setValue((event) -> message.set("Screen size is unknown"));
+    }
+
+    @Override
+    public FXBeanInfo getFXBeanInfo() {
+        return info;
+    }
+
+    static List<String> words(String message) {
         String[] arr = new String[6];
         String[] words = message == null ? new String[0] : message.split(" ", 6);
         for (int i = 0; i < 6; i++) {
             arr[i] = words.length > i ? words[i] : "!";
         }
-        return java.util.Arrays.asList(arr);
+        return Arrays.asList(arr);
     }
 
-    @Function static void turnAnimationOn(Data model) {
-        model.setRotating(true);
-    }
-
-    @Function
-    void turnAnimationOff(final Data model) {
-        model.setRotating(false);
-    }
-
-    @Function static void rotate5s(final Data model) {
-        model.setRotating(true);
-        java.util.Timer timer = new java.util.Timer("Rotates a while");
-        timer.schedule(new java.util.TimerTask() {
-            @Override
-            public void run() {
-                model.setRotating(false);
-            }
-        }, 5000);
-    }
-
-    @Function
-    void showScreenSize(Data model) {
-        model.setMessage("Screen size is unknown");
-    }
-
-    @OnPropertyChange("message")
-    void storeMessage(Data model) {
-        final String msg = model.getMessage();
-    }
-
-    @ModelOperation
-    void initServices(Data model, PlatformServices services) {
-        this.services = services;
-    }
     /**
      * Called when the page is ready.
      */
     static void onPageLoad(PlatformServices services) {
-        Data ui = new Data();
-        ui.setMessage("Hello World from HTML and Java!");
-        ui.initServices(services);
-        ui.applyBindings();
+        DataModel ui = new DataModel();
+        ui.message.set("Hello World from HTML and Java!");
+        Models.applyBindings(ui);
     }
 }

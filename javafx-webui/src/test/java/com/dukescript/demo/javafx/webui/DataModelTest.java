@@ -1,5 +1,6 @@
 package com.dukescript.demo.javafx.webui;
 
+import java.util.List;
 import net.java.html.junit.BrowserRunner;
 import static org.junit.Assert.assertEquals;
 import org.junit.runner.RunWith;
@@ -11,10 +12,10 @@ import org.junit.Test;
 @RunWith(BrowserRunner.class)
 public class DataModelTest {
     @Test public void testUIModelWithoutUI() {
-        Data model = new Data();
-        model.setMessage("Hello World!");
+        DataModel model = new DataModel();
+        model.message.set("Hello World!");
 
-        java.util.List<String> arr = model.getWords();
+        List<String> arr = model.words.getValue();
         assertEquals("Six words always", arr.size(), 6);
         assertEquals("Hello is the first word", "Hello", arr.get(0));
         assertEquals("World is the second word", "World!", arr.get(1));
