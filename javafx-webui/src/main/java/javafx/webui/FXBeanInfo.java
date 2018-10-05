@@ -1,23 +1,31 @@
 package javafx.webui;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import org.netbeans.html.json.spi.Proto;
 
 public final class FXBeanInfo {
     private final Object bean;
+    final Proto proto;
     private final Map<String, ObservableValue<?>> properties;
     private final Map<String, ReadOnlyProperty<EventHandler<ActionEvent>>> functions;
+    final List<ObservableValue<?>> props;
+    final List<ReadOnlyProperty<EventHandler<ActionEvent>>> funcs;
 
     private FXBeanInfo(Object bean, Map<String, ObservableValue<?>> properties, Map<String, ReadOnlyProperty<EventHandler<ActionEvent>>> functions) {
         this.bean = bean;
         this.properties = Collections.unmodifiableMap(properties);
         this.functions = Collections.unmodifiableMap(functions);
+        this.props = new ArrayList<>(this.properties.values());
+        this.funcs = new ArrayList<>(this.functions.values());
+        this.proto = FXHtml4Java.findProto(this);
     }
 
     public Object getBean() {
@@ -72,4 +80,6 @@ public final class FXBeanInfo {
             return info;
         }
     }
+
+
 }
