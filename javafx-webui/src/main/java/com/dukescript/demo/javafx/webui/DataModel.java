@@ -2,6 +2,7 @@ package com.dukescript.demo.javafx.webui;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
@@ -13,7 +14,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.webui.ActionDataEvent;
 import javafx.webui.FXBeanInfo;
 import net.java.html.json.Models;
 
@@ -24,10 +27,11 @@ final class DataModel implements FXBeanInfo.Provider {
     }, message);
     final ListProperty<HistoryElement> history = new SimpleListProperty<>(this, "history", FXCollections.observableArrayList());
     final BooleanProperty rotating = new SimpleBooleanProperty(this, "rotating");
-    final Property<EventHandler<ActionEvent>> turnAnimationOn = new SimpleObjectProperty<>(this, "turnAnimationOn");
+    final Property<EventHandler<Event>> turnAnimationOn = new SimpleObjectProperty<>(this, "turnAnimationOn");
     final Property<EventHandler<ActionEvent>> turnAnimationOff = new SimpleObjectProperty<>(this, "turnAnimationOff");
     final Property<EventHandler<ActionEvent>> rotate5s = new SimpleObjectProperty<>(this, "rotate5s");
     final Property<EventHandler<ActionEvent>> showScreenSize = new SimpleObjectProperty<>(this, "showScreenSize");
+    final Property<EventHandler<ActionDataEvent>> removeFromHistory = new SimpleObjectProperty<>(this, "removeFromHistory");
     final FXBeanInfo info = FXBeanInfo.create(this).
             property(message).
             property(rotating).
@@ -37,6 +41,7 @@ final class DataModel implements FXBeanInfo.Provider {
             action(turnAnimationOff).
             action(rotate5s).
             action(showScreenSize).
+            action(removeFromHistory).
             build();
 
     public DataModel() {
@@ -56,6 +61,13 @@ final class DataModel implements FXBeanInfo.Provider {
             }, 5000);
         });
         showScreenSize.setValue((event) -> message.set("Screen size is unknown"));
+        removeFromHistory.setValue((event) -> {
+            HistoryElement h = event.getSource(HistoryElement.class);
+            history.remove(h);
+            if (Objects.equals(h.message, message.get())) {
+                message.set("Message has been removed from history");
+            }
+        });
     }
 
     @Override
@@ -82,12 +94,14 @@ final class DataModel implements FXBeanInfo.Provider {
     }
 
     private static final class HistoryElement implements FXBeanInfo.Provider {
-        private final String message;
-        private final FXBeanInfo info;
+        final String message;
+        final FXBeanInfo info;
 
         HistoryElement(String message) {
             this.message = message;
-            this.info = FXBeanInfo.create(this).constant("message", message).build();
+            this.info = FXBeanInfo.create(this).
+                constant("message", message).
+                build();
         }
 
         @Override

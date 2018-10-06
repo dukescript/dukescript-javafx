@@ -9,7 +9,6 @@ import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WeakChangeListener;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import org.netbeans.html.json.spi.Proto;
 
@@ -18,11 +17,15 @@ public final class FXBeanInfo {
     private final ChangeListener listener;
     final Proto proto;
     private final Map<String, ObservableValue<?>> properties;
-    private final Map<String, ReadOnlyProperty<EventHandler<ActionEvent>>> functions;
+    private final Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions;
     final List<ObservableValue<?>> props;
-    final List<ReadOnlyProperty<EventHandler<ActionEvent>>> funcs;
+    final List<ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> funcs;
 
-    private FXBeanInfo(Object bean, Map<String, ObservableValue<?>> properties, Map<String, ReadOnlyProperty<EventHandler<ActionEvent>>> functions) {
+    private FXBeanInfo(
+        Object bean,
+        Map<String, ObservableValue<?>> properties,
+        Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions
+    ) {
         this.bean = bean;
         this.properties = properties == null ? Collections.emptyMap() : Collections.unmodifiableMap(properties);
         this.functions = functions == null ? Collections.emptyMap() : Collections.unmodifiableMap(functions);
@@ -50,7 +53,7 @@ public final class FXBeanInfo {
         return properties;
     }
 
-    public Map<String, ReadOnlyProperty<EventHandler<ActionEvent>>> getFunctions() {
+    public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getFunctions() {
         return functions;
     }
 
@@ -65,7 +68,7 @@ public final class FXBeanInfo {
     public static final class Builder {
         private Object bean;
         private Map<String, ObservableValue<?>> properties;
-        private Map<String, ReadOnlyProperty<EventHandler<ActionEvent>>> functions;
+        private Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions;
 
         Builder(Object bean) {
             this.bean = bean;
@@ -87,7 +90,7 @@ public final class FXBeanInfo {
             return property(name, new ConstantValue<T>(value));
         }
 
-        public Builder action(ReadOnlyProperty<EventHandler<ActionEvent>> p) {
+        public Builder action(ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p) {
             if (this.functions == null) {
                 this.functions = new LinkedHashMap<>();
             }
@@ -95,7 +98,7 @@ public final class FXBeanInfo {
             if (name == null) {
                 throw new NullPointerException("No name for " + p);
             }
-            ReadOnlyProperty<EventHandler<ActionEvent>> prev = this.functions.put(name, p);
+            ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> prev = this.functions.put(name, p);
             if (prev != null) {
                 this.functions.put(name, prev);
                 throw new IllegalArgumentException("Cannot redefine " + prev + " with " + p);

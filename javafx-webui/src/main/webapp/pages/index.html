@@ -23,7 +23,8 @@
         <h3>History</h3>
         <ul data-bind="foreach: history">
             <li>
-                <span data-bind="text: message">
+                <span data-bind="text: message"></span>
+                (<a href="#" data-bind="click: $root.removeFromHistory">remove</a>)
             </li>
         </ul>
     </body>
