@@ -71,6 +71,10 @@ public final class FXBeanInfo {
             this.bean = bean;
         }
 
+        public Builder property(ReadOnlyProperty<?> p) {
+            return property(p.getName(), p);
+        }
+
         public Builder property(String name, ObservableValue<?> p) {
             if (this.properties == null) {
                 this.properties = new LinkedHashMap<>();
@@ -79,11 +83,19 @@ public final class FXBeanInfo {
             return this;
         }
 
-        public Builder action(String name, ReadOnlyProperty<EventHandler<ActionEvent>> p) {
+        public Builder action(ReadOnlyProperty<EventHandler<ActionEvent>> p) {
             if (this.functions == null) {
                 this.functions = new LinkedHashMap<>();
             }
-            this.functions.put(name, p);
+            final String name = p.getName();
+            if (name == null) {
+                throw new NullPointerException("No name for " + p);
+            }
+            ReadOnlyProperty<EventHandler<ActionEvent>> prev = this.functions.put(name, p);
+            if (prev != null) {
+                this.functions.put(name, prev);
+                throw new IllegalArgumentException("Cannot redefine " + prev + " with " + p);
+            }
             return this;
         }
 

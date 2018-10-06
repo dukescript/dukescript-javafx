@@ -15,7 +15,7 @@ import javafx.webui.FXBeanInfo;
 import net.java.html.json.Models;
 
 final class DataModel implements FXBeanInfo.Provider {
-    final ObjectProperty<String> message = new SimpleObjectProperty<>();
+    final ObjectProperty<String> message = new SimpleObjectProperty<>(this, "message");
     final ObservableValue<List<String>> words = new ObjectBinding<List<String>>() {
         {
             bind(message);
@@ -25,19 +25,19 @@ final class DataModel implements FXBeanInfo.Provider {
             return words(message.get());
         }
     };
-    final BooleanProperty rotating = new SimpleBooleanProperty();
-    final Property<EventHandler<ActionEvent>> turnAnimationOn = new SimpleObjectProperty<>();
-    final Property<EventHandler<ActionEvent>> turnAnimationOff = new SimpleObjectProperty<>();
-    final Property<EventHandler<ActionEvent>> rotate5s = new SimpleObjectProperty<>();
-    final Property<EventHandler<ActionEvent>> showScreenSize = new SimpleObjectProperty<>();
+    final BooleanProperty rotating = new SimpleBooleanProperty(this, "rotating");
+    final Property<EventHandler<ActionEvent>> turnAnimationOn = new SimpleObjectProperty<>(this, "turnAnimationOn");
+    final Property<EventHandler<ActionEvent>> turnAnimationOff = new SimpleObjectProperty<>(this, "turnAnimationOff");
+    final Property<EventHandler<ActionEvent>> rotate5s = new SimpleObjectProperty<>(this, "rotate5s");
+    final Property<EventHandler<ActionEvent>> showScreenSize = new SimpleObjectProperty<>(this, "showScreenSize");
     final FXBeanInfo info = FXBeanInfo.create(this).
-            property("message", message).
-            property("rotating", rotating).
+            property(message).
+            property(rotating).
             property("words", words).
-            action("turnAnimationOn", turnAnimationOn).
-            action("turnAnimationOff", turnAnimationOff).
-            action("rotate5s", rotate5s).
-            action("showScreenSize", showScreenSize).
+            action(turnAnimationOn).
+            action(turnAnimationOff).
+            action(rotate5s).
+            action(showScreenSize).
             build();
 
     public DataModel() {
