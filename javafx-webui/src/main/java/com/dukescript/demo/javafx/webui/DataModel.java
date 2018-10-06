@@ -2,6 +2,7 @@ package com.dukescript.demo.javafx.webui;
 
 import java.util.Arrays;
 import java.util.List;
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -16,15 +17,9 @@ import net.java.html.json.Models;
 
 final class DataModel implements FXBeanInfo.Provider {
     final ObjectProperty<String> message = new SimpleObjectProperty<>(this, "message");
-    final ObservableValue<List<String>> words = new ObjectBinding<List<String>>() {
-        {
-            bind(message);
-        }
-        @Override
-        protected List<String> computeValue() {
-            return words(message.get());
-        }
-    };
+    final ObservableValue<List<String>> words = Bindings.createObjectBinding(() -> {
+        return words(message.get());
+    }, message);
     final BooleanProperty rotating = new SimpleBooleanProperty(this, "rotating");
     final Property<EventHandler<ActionEvent>> turnAnimationOn = new SimpleObjectProperty<>(this, "turnAnimationOn");
     final Property<EventHandler<ActionEvent>> turnAnimationOff = new SimpleObjectProperty<>(this, "turnAnimationOff");
