@@ -35,7 +35,7 @@ final class DataModel implements FXBeanInfo.Provider {
             property("rotating", rotating).
             property("words", words).
             action("turnAnimationOn", turnAnimationOn).
-            action("turnAnimationOn", turnAnimationOff).
+            action("turnAnimationOff", turnAnimationOff).
             action("rotate5s", rotate5s).
             action("showScreenSize", showScreenSize).
             build();

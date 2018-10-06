@@ -2,8 +2,11 @@ package javafx.webui;
 
 import java.util.Map;
 import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WritableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
 
@@ -36,6 +39,11 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> {
             boolean readOnly = !(p instanceof WritableValue);
             registerProperty(name, index++, readOnly);
         }
+        index = 0;
+        for (Map.Entry<String, ReadOnlyProperty<EventHandler<ActionEvent>>> e : info.getFunctions().entrySet()) {
+            String name = e.getKey();
+            registerFunction(name, index++);
+        }
     }
 
     @Override
@@ -54,7 +62,11 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> {
 
     @Override
     protected void call(FXBeanInfo.Provider model, int i, Object o, Object o1) throws Exception {
-        throw new UnsupportedOperationException("call");
+        ReadOnlyProperty<EventHandler<ActionEvent>> p = model.getFXBeanInfo().funcs.get(i);
+        EventHandler<ActionEvent> fn = p.getValue();
+        if (fn != null) {
+            fn.handle(new ActionEvent(o, null));
+        }
     }
 
     @Override
