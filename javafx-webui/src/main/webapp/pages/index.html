@@ -19,7 +19,12 @@
                 <span data-bind="text: $data, css: { 'rotate' : $root.rotating } "></span>
             </span>
         </div>
-        <!-- Remove this line to remove the button bar in the footer --> 
-        <script async=true src="http://dukescript.com/presenters/welcome.js"></script>
+
+        <h3>History</h3>
+        <ul data-bind="foreach: history">
+            <li>
+                <span data-bind="text: message">
+            </li>
+        </ul>
     </body>
 </html>

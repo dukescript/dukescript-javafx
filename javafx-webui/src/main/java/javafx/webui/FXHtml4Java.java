@@ -37,7 +37,8 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> {
             String name = e.getKey();
             ObservableValue<?> p = e.getValue();
             boolean readOnly = !(p instanceof WritableValue);
-            registerProperty(name, index++, readOnly);
+            boolean constant = p instanceof ConstantValue;
+            registerProperty(name, index++, readOnly, constant);
         }
         index = 0;
         for (Map.Entry<String, ReadOnlyProperty<EventHandler<ActionEvent>>> e : info.getFunctions().entrySet()) {

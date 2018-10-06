@@ -3,13 +3,15 @@ package com.dukescript.demo.javafx.webui;
 import java.util.Arrays;
 import java.util.List;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.webui.FXBeanInfo;
@@ -20,6 +22,7 @@ final class DataModel implements FXBeanInfo.Provider {
     final ObservableValue<List<String>> words = Bindings.createObjectBinding(() -> {
         return words(message.get());
     }, message);
+    final ListProperty<HistoryElement> history = new SimpleListProperty<>(this, "history", FXCollections.observableArrayList());
     final BooleanProperty rotating = new SimpleBooleanProperty(this, "rotating");
     final Property<EventHandler<ActionEvent>> turnAnimationOn = new SimpleObjectProperty<>(this, "turnAnimationOn");
     final Property<EventHandler<ActionEvent>> turnAnimationOff = new SimpleObjectProperty<>(this, "turnAnimationOff");
@@ -29,6 +32,7 @@ final class DataModel implements FXBeanInfo.Provider {
             property(message).
             property(rotating).
             property("words", words).
+            property(history).
             action(turnAnimationOn).
             action(turnAnimationOff).
             action(rotate5s).
@@ -36,6 +40,9 @@ final class DataModel implements FXBeanInfo.Provider {
             build();
 
     public DataModel() {
+        message.addListener((observable, oldValue, newValue) -> {
+            history.add(new HistoryElement(newValue));
+        });
         turnAnimationOn.setValue((event) -> rotating.set(true));
         turnAnimationOff.setValue((event) -> rotating.set(false));
         rotate5s.setValue((event) -> {
@@ -72,5 +79,20 @@ final class DataModel implements FXBeanInfo.Provider {
         DataModel ui = new DataModel();
         ui.message.set("Hello World from HTML and Java!");
         Models.applyBindings(ui);
+    }
+
+    private static final class HistoryElement implements FXBeanInfo.Provider {
+        private final String message;
+        private final FXBeanInfo info;
+
+        HistoryElement(String message) {
+            this.message = message;
+            this.info = FXBeanInfo.create(this).constant("message", message).build();
+        }
+
+        @Override
+        public FXBeanInfo getFXBeanInfo() {
+            return info;
+        }
     }
 }

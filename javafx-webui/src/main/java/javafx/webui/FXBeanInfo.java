@@ -24,8 +24,8 @@ public final class FXBeanInfo {
 
     private FXBeanInfo(Object bean, Map<String, ObservableValue<?>> properties, Map<String, ReadOnlyProperty<EventHandler<ActionEvent>>> functions) {
         this.bean = bean;
-        this.properties = Collections.unmodifiableMap(properties);
-        this.functions = Collections.unmodifiableMap(functions);
+        this.properties = properties == null ? Collections.emptyMap() : Collections.unmodifiableMap(properties);
+        this.functions = functions == null ? Collections.emptyMap() : Collections.unmodifiableMap(functions);
         this.props = new ArrayList<>(this.properties.values());
         this.funcs = new ArrayList<>(this.functions.values());
         this.proto = FXHtml4Java.findProto(this);
@@ -81,6 +81,10 @@ public final class FXBeanInfo {
             }
             this.properties.put(name, p);
             return this;
+        }
+
+        public <T> Builder constant(String name, T value) {
+            return property(name, new ConstantValue<T>(value));
         }
 
         public Builder action(ReadOnlyProperty<EventHandler<ActionEvent>> p) {
