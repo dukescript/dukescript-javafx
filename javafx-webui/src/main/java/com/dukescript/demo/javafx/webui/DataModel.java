@@ -17,6 +17,9 @@ import net.java.html.json.Models;
 final class DataModel implements FXBeanInfo.Provider {
     final ObjectProperty<String> message = new SimpleObjectProperty<>();
     final ObservableValue<List<String>> words = new ObjectBinding<List<String>>() {
+        {
+            bind(message);
+        }
         @Override
         protected List<String> computeValue() {
             return words(message.get());

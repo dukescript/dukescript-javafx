@@ -6,13 +6,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WeakChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import org.netbeans.html.json.spi.Proto;
 
 public final class FXBeanInfo {
     private final Object bean;
+    private final ChangeListener listener;
     final Proto proto;
     private final Map<String, ObservableValue<?>> properties;
     private final Map<String, ReadOnlyProperty<EventHandler<ActionEvent>>> functions;
@@ -26,6 +29,17 @@ public final class FXBeanInfo {
         this.props = new ArrayList<>(this.properties.values());
         this.funcs = new ArrayList<>(this.functions.values());
         this.proto = FXHtml4Java.findProto(this);
+        this.listener = (observable, oldValue, newValue) -> {
+            for (Map.Entry<String, ObservableValue<?>> entry : properties.entrySet()) {
+                if (entry.getValue() == observable) {
+                    proto.valueHasMutated(entry.getKey(), oldValue, newValue);
+                }
+            }
+        };
+        WeakChangeListener weakListener = new WeakChangeListener<>(listener);
+        for (ObservableValue<?> ov : this.props) {
+            ov.addListener(weakListener);
+        }
     }
 
     public Object getBean() {
