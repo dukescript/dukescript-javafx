@@ -8,7 +8,7 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>bundle</packaging>
 
-  <name>JavaFX WebUI API &amp; Demo</name>
+  <name>JavaFX WebUI Demo</name>
 
   <properties>
     <netbeans.compile.on.save>all</netbeans.compile.on.save>
@@ -157,6 +157,11 @@
         <groupId>org.netbeans.html</groupId>
         <artifactId>net.java.html.sound</artifactId>
         <version>${net.java.html.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.dukescript.api</groupId>
+        <artifactId>javafx.beaninfo</artifactId>
+        <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
         <groupId>org.netbeans.html</groupId>
