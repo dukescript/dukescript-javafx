@@ -1,5 +1,7 @@
-package javafx.webui;
+package com.dukescript.impl.javafx.beans;
 
+import com.dukescript.api.javafx.beans.ActionDataEvent;
+import com.dukescript.api.javafx.beans.FXBeanInfo;
 import java.util.Map;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyProperty;
@@ -9,7 +11,7 @@ import javafx.event.EventHandler;
 import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
 
-final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> {
+final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> implements ActionDataEventFactory.Convertor {
     private static final ClassValue<FXHtml4Java[]> TYPES = new ClassValue<FXHtml4Java[]>() {
         @Override
         protected FXHtml4Java[] computeValue(Class<?> type) {
@@ -46,9 +48,14 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> {
         }
     }
 
+    private ObservableValue<?> valueAt(FXBeanInfo.Provider model, int i) {
+        FXHtmlAdapter a = model.getFXBeanInfo().lookup(FXHtmlAdapter.class);
+        return a == null ? null : a.props.get(i);
+    }
+
     @Override
     protected void setValue(FXBeanInfo.Provider model, int i, Object o) {
-        ObservableValue p = model.getFXBeanInfo().props.get(i);
+        ObservableValue p = valueAt(model, i);
         if (p instanceof Property) {
             ((Property) p).setValue(o);
         }
@@ -56,16 +63,20 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> {
 
     @Override
     protected Object getValue(FXBeanInfo.Provider model, int i) {
-        ObservableValue p = model.getFXBeanInfo().props.get(i);
+        ObservableValue p = valueAt(model, i);
         return p.getValue();
     }
 
     @Override
     protected void call(FXBeanInfo.Provider model, int i, Object o, Object o1) throws Exception {
-        ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p = model.getFXBeanInfo().funcs.get(i);
-        EventHandler<? super ActionDataEvent> fn = p.getValue();
-        if (fn != null) {
-            fn.handle(new ActionDataEvent(this, model, o, o1));
+        ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p;
+        FXHtmlAdapter a = model.getFXBeanInfo().lookup(FXHtmlAdapter.class);
+        if (a != null) {
+            p = a.funcs.get(i);
+            EventHandler<? super ActionDataEvent> fn = p.getValue();
+            if (fn != null) {
+                fn.handle(ActionDataEventFactory.newEvent(this, model, o, o1));
+            }
         }
     }
 
@@ -88,9 +99,38 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> {
     protected Proto protoFor(Object o) {
         if (o instanceof FXBeanInfo.Provider) {
             FXBeanInfo.Provider p = (FXBeanInfo.Provider) o;
-            return p.getFXBeanInfo().proto;
+            FXHtmlAdapter a = p.getFXBeanInfo().lookup(FXHtmlAdapter.class);
+            if (a != null) {
+                return a.proto;
+            }
         }
         return null;
     }
 
+    @Override
+    public Object toString(FXBeanInfo info, Object event, String name) {
+        FXHtmlAdapter a = info.lookup(FXHtmlAdapter.class);
+        if (a != null) {
+            return a.proto.toString(event, name);
+        }
+        return null;
+    }
+
+    @Override
+    public Object toNumber(FXBeanInfo info, Object event, String name) {
+        FXHtmlAdapter a = info.lookup(FXHtmlAdapter.class);
+        if (a != null) {
+            return a.proto.toNumber(event, name);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T toModel(FXBeanInfo info, Class<T> as, Object d) {
+        FXHtmlAdapter a = info.lookup(FXHtmlAdapter.class);
+        if (a != null) {
+            return a.proto.toModel(as, d);
+        }
+        return null;
+    }
 }

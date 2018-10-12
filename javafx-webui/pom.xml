@@ -17,6 +17,13 @@
     <exec.debug.arg>-Ddebug=false</exec.debug.arg>
     <net.java.html.version>1.5.1</net.java.html.version>
   </properties>
+  <repositories>
+      <repository>
+          <id>netbeans</id>
+          <name>NetBeans</name>
+          <url>http://bits.netbeans.org/maven2/</url>
+      </repository>
+  </repositories>
   <build>
       <plugins>
           <plugin>
@@ -161,6 +168,13 @@
         <groupId>org.netbeans.html</groupId>
         <artifactId>net.java.html.boot.fx</artifactId>
         <version>${net.java.html.version}</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.netbeans.api</groupId>
+        <artifactId>org-openide-util-lookup</artifactId>
+        <version>RELEASE82</version>
         <scope>provided</scope>
     </dependency>
 

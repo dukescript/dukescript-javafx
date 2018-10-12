@@ -1,25 +1,22 @@
-package javafx.webui;
+package com.dukescript.api.javafx.beans;
 
+import com.dukescript.impl.javafx.beans.ConstantValue;
+import com.dukescript.spi.javafx.beans.FXBeanInfoProvider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import javafx.beans.property.ReadOnlyProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WeakChangeListener;
 import javafx.event.EventHandler;
-import org.netbeans.html.json.spi.Proto;
 
 public final class FXBeanInfo {
     private final Object bean;
-    private final ChangeListener listener;
-    final Proto proto;
+    private final Object extra;
     private final Map<String, ObservableValue<?>> properties;
     private final Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions;
-    final List<ObservableValue<?>> props;
-    final List<ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> funcs;
 
     private FXBeanInfo(
         Object bean,
@@ -29,20 +26,16 @@ public final class FXBeanInfo {
         this.bean = bean;
         this.properties = properties == null ? Collections.emptyMap() : Collections.unmodifiableMap(properties);
         this.functions = functions == null ? Collections.emptyMap() : Collections.unmodifiableMap(functions);
-        this.props = new ArrayList<>(this.properties.values());
-        this.funcs = new ArrayList<>(this.functions.values());
-        this.proto = FXHtml4Java.findProto(this);
-        this.listener = (observable, oldValue, newValue) -> {
-            for (Map.Entry<String, ObservableValue<?>> entry : properties.entrySet()) {
-                if (entry.getValue() == observable) {
-                    proto.valueHasMutated(entry.getKey(), oldValue, newValue);
-                }
+
+        List<Object> data = new ArrayList<>();
+        for (FXBeanInfoProvider<?> p : ServiceLoader.load(FXBeanInfoProvider.class)) {
+            Object info = p.findExtraInfo(this);
+            if (info != null) {
+                data.add(info);
             }
-        };
-        WeakChangeListener weakListener = new WeakChangeListener<>(listener);
-        for (ObservableValue<?> ov : this.props) {
-            ov.addListener(weakListener);
         }
+
+        this.extra = data.isEmpty() ? null : data.size() == 1 ? data.get(0) : data.toArray();
     }
 
     public Object getBean() {
@@ -55,6 +48,23 @@ public final class FXBeanInfo {
 
     public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getFunctions() {
         return functions;
+    }
+
+    public <T> T lookup(Class<T> extraInfo) {
+        if (extraInfo.isArray()) {
+            return null;
+        }
+        if (extraInfo.isInstance(extra)) {
+            return extraInfo.cast(extra);
+        }
+        if (extra instanceof Object[]) {
+            for (Object e : ((Object[]) extra)) {
+                if (extraInfo.isInstance(e)) {
+                    return extraInfo.cast(e);
+                }
+            }
+        }
+        return null;
     }
 
     public static interface Provider {
@@ -113,6 +123,4 @@ public final class FXBeanInfo {
             return info;
         }
     }
-
-
 }

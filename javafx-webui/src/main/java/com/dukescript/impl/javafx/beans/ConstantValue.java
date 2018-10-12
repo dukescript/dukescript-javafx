@@ -1,13 +1,13 @@
-package javafx.webui;
+package com.dukescript.impl.javafx.beans;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
-final class ConstantValue<T> implements ObservableValue<T> {
+public final class ConstantValue<T> implements ObservableValue<T> {
     private final T value;
 
-    ConstantValue(T value) {
+    public ConstantValue(T value) {
         this.value = value;
     }
 
@@ -26,12 +26,9 @@ final class ConstantValue<T> implements ObservableValue<T> {
 
     @Override
     public void addListener(InvalidationListener listener) {
-        throw new UnsupportedOperationException("addListener");
     }
 
     @Override
     public void removeListener(InvalidationListener listener) {
-        throw new UnsupportedOperationException("removeListener");
     }
-
 }

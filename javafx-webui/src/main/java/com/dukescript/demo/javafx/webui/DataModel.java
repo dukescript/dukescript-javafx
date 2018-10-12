@@ -16,8 +16,8 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.webui.ActionDataEvent;
-import javafx.webui.FXBeanInfo;
+import com.dukescript.api.javafx.beans.ActionDataEvent;
+import com.dukescript.api.javafx.beans.FXBeanInfo;
 import net.java.html.json.Models;
 
 final class DataModel implements FXBeanInfo.Provider {
