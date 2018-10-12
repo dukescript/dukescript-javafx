@@ -87,7 +87,7 @@ final class DataModel implements FXBeanInfo.Provider {
     /**
      * Called when the page is ready.
      */
-    static void onPageLoad(PlatformServices services) {
+    static void onPageLoad() {
         DataModel ui = new DataModel();
         ui.message.set("Hello World from HTML and Java!");
         Models.applyBindings(ui);

@@ -15,18 +15,7 @@ public final class Main {
         System.exit(0);
     }
 
-    /**
-     * Called when the page is ready.
-     */
-    public static void onPageLoad(PlatformServices services) throws Exception {
-        DataModel.onPageLoad(services);
-    }
-
     public static void onPageLoad() throws Exception {
-        // don't put "common" initialization stuff here, other platforms (iOS, Android, Bck2Brwsr) may not call this method. They rather call DataModel.onPageLoad
-        DataModel.onPageLoad(new DesktopServices());
-    }
-
-    private static final class DesktopServices extends PlatformServices {
+        DataModel.onPageLoad();
     }
 }
