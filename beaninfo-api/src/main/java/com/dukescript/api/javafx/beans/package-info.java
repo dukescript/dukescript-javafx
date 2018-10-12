@@ -1,5 +1,3 @@
-package com.dukescript.impl.javafx.beans;
-
 /*-
  * #%L
  * DukeScript JavaFX Extensions - a library from the "DukeScript" project.
@@ -12,10 +10,10 @@ package com.dukescript.impl.javafx.beans;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,22 +24,11 @@ package com.dukescript.impl.javafx.beans;
  * #L%
  */
 
-import com.dukescript.api.javafx.beans.FXBeanInfo;
-import com.dukescript.spi.javafx.beans.FXBeanInfoProvider;
-import org.openide.util.lookup.ServiceProvider;
 
-@ServiceProvider(service = FXBeanInfoProvider.class)
-public final class FXHtml4JavaProvider extends FXBeanInfoProvider<FXHtmlAdapter> {
-    public FXHtml4JavaProvider() {
-        super(FXHtmlAdapter.class);
-    }
-
-    @Override
-    public FXHtmlAdapter findExtraInfo(FXBeanInfo info) {
-        try {
-            return new FXHtmlAdapter(info);
-        } catch (LinkageError err) {
-            return null;
-        }
-    }
-}
+/**
+ * Enhanced bean introspection package. Provides a way to 
+ * {@linkplain FXBeanInfo.Provider obtain}
+ * {@link FXBeanInfo} for a given JavaFX bean without using
+ * reflection.
+ */
+package com.dukescript.api.javafx.beans;

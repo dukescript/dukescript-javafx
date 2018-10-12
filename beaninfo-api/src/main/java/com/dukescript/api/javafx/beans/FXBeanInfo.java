@@ -33,11 +33,21 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 
+/** Data with information about {@linkplain #getProperties() properties}
+ * and {@linkplain #getFunctions() actions} of a JavaFX bean. Beans supporting this
+ * protocol should implement {@link Provider} - use its {@link Provider#getFXBeanInfo()}
+ * method to obtain instance of the info for given bean.
+ * <p>
+ * If you have a bean willing to provide the info, use {@link FXBeanInfo#create(java.lang.Object)}
+ * and {@link Builder} to create it. Then return it from your
+ * {@link Provider#getFXBeanInfo()} method.
+ */
 public final class FXBeanInfo {
     private final Object bean;
     private final Object extra;
@@ -64,44 +74,88 @@ public final class FXBeanInfo {
         this.extra = data.isEmpty() ? null : data.size() == 1 ? data.get(0) : data.toArray();
     }
 
+    /** The associated bean.
+     *
+     * @return object this info {@linkplain #create(java.lang.Object) was created} for
+     */
     public Object getBean() {
         return bean;
     }
 
+    /** Properties of {@linkplain #getBean() this bean}.
+     *
+     * @return immutable map of available properties
+     */
     public Map<String, ObservableValue<?>> getProperties() {
         return properties;
     }
 
+    /** Invocable handlers for {@linkplain #getBean() this bean}.
+     *
+     * @return immutable map of available event handlers
+     */
     public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getFunctions() {
         return functions;
     }
 
-    public <T> T lookup(Class<T> extraInfo) {
-        if (extraInfo.isArray()) {
+    /** Extra information associated with this bean info.
+     *
+     * @param <T> type of the information
+     * @param type class describing the requested type
+     * @return {code null} or an instance of requested type
+     * @see FXBeanInfoProvider
+     */
+    public <T> T lookup(Class<T> type) {
+        if (type.isArray()) {
             return null;
         }
-        if (extraInfo.isInstance(extra)) {
-            return extraInfo.cast(extra);
+        if (type.isInstance(extra)) {
+            return type.cast(extra);
         }
         if (extra instanceof Object[]) {
             for (Object e : ((Object[]) extra)) {
-                if (extraInfo.isInstance(e)) {
-                    return extraInfo.cast(e);
+                if (type.isInstance(e)) {
+                    return type.cast(e);
                 }
             }
         }
         return null;
     }
 
+    /** Single method interface for JavaFX beans that can provide {@link FXBeanInfo}.
+     * Use {@link #create(java.lang.Object)} and {@link Builder#build()} to
+     * create an instance of your info in your bean constructor and assign
+     * it to a {@code final} field. Then return it from the {@link #getFXBeanInfo()}
+     * method.
+     */
     public static interface Provider {
+        /** Provides the info about {@code this} bean. Return always the same
+         * value of the info for the same bean.
+         *
+         * @return constant info describing {@code this} bean
+         */
         FXBeanInfo getFXBeanInfo();
     }
 
+    /**
+     * Start creating new {@link FXBeanInfo} for a provided {@code bean}.
+     * Use {@link Builder} methods like {@link Builder#property(javafx.beans.property.ReadOnlyProperty)}
+     * or {@link Builder#action(javafx.beans.property.ReadOnlyProperty)} followed
+     * by final {@link Builder#build()} to create the info.
+     *
+     * @param bean the bean to create the info for
+     * @return builder to create the info with
+     */
     public static Builder create(Object bean) {
-        return new Builder(bean);
+        return new FXBeanInfo(null, null, null).new Builder(bean);
     }
 
-    public static final class Builder {
+    /**
+     * Builder (obtained via {@link #create(java.lang.Object)} method) to
+     * create a description of a JavaFX bean and represent it as
+     * {@link FXBeanInfo}.
+     */
+    public final class Builder {
         private Object bean;
         private Map<String, ObservableValue<?>> properties;
         private Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions;
@@ -110,11 +164,24 @@ public final class FXBeanInfo {
             this.bean = bean;
         }
 
+        /** Registers another property into be builder.
+         *
+         * @param p the property
+         * @return {@code this}
+         */
         public Builder property(ReadOnlyProperty<?> p) {
             return property(p.getName(), p);
         }
 
+        /** Registers another property/value with provided name into the
+         * builder.
+         *
+         * @param name non-null name of the property
+         * @param p the observable value
+         * @return {@code this}
+         */
         public Builder property(String name, ObservableValue<?> p) {
+            Objects.requireNonNull(p, "Property must have a name: " + p);
             if (this.properties == null) {
                 this.properties = new LinkedHashMap<>();
             }
@@ -122,6 +189,13 @@ public final class FXBeanInfo {
             return this;
         }
 
+        /** Registers a property with a constant value.
+         *
+         * @param <T> type of the value
+         * @param name non-null name of the property
+         * @param value the constant value of the property
+         * @return {@code this}
+         */
         public <T> Builder constant(String name, T value) {
             return property(name, new ConstantValue<T>(value));
         }
@@ -142,6 +216,11 @@ public final class FXBeanInfo {
             return this;
         }
 
+        /**
+         * Builds {@link FXBeanInfo} from provided properties and actions.
+         * It clears the so far specified values.
+         * @return the JavaFX bean info
+         */
         public FXBeanInfo build() {
             FXBeanInfo info = new FXBeanInfo(bean, this.properties, this.functions);
             this.properties = null;
