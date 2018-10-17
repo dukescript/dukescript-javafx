@@ -62,12 +62,13 @@ public final class FXBeanInfo {
         this.bean = bean;
         this.properties = properties == null ? Collections.emptyMap() : Collections.unmodifiableMap(properties);
         this.functions = functions == null ? Collections.emptyMap() : Collections.unmodifiableMap(functions);
-
         List<Object> data = new ArrayList<>();
-        for (FXBeanInfoProvider<?> p : ServiceLoader.load(FXBeanInfoProvider.class)) {
-            Object info = p.findExtraInfo(this);
-            if (info != null) {
-                data.add(info);
+        if (bean!=null){
+            for (FXBeanInfoProvider<?> p : ServiceLoader.load(FXBeanInfoProvider.class)) {
+                Object info = p.findExtraInfo(this);
+                if (info != null) {
+                    data.add(info);
+                }
             }
         }
 
