@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  DukeScript JavaFX Extensions - a library from the "DukeScript" project.
+  %%
+  Copyright (C) 2018 Dukehoff GmbH
+  %%
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
+  #L%
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.dukescript.javafx</groupId>
+        <artifactId>testing</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <name>RoboVM Testing - JavaFX BeanInfo</name>
+    <artifactId>robovmtest</artifactId>
+    <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>tests</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dukescript.presenters</groupId>
+            <artifactId>ios</artifactId>
+            <version>${presenters.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dukescript.api</groupId>
+            <artifactId>junit-browser-runner</artifactId>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.dukescript.api</groupId>
+            <artifactId>junit-osgi</artifactId>
+        </dependency>
+    </dependencies>
+    <profiles>
+        <profile>
+            <activation>
+                <os>
+                    <family>Mac OS X</family>
+                </os>
+            </activation>
+            <id>ios</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mobidevelop.robovm</groupId>
+                        <artifactId>robovm-maven-plugin</artifactId>
+                        <version>${robovm.version}</version>
+                        <configuration>
+                            <config>
+                                <mainClass>com.dukescript.javafx.robovm.RoboMain</mainClass>
+                                <forceLinkClasses>
+                                    <pattern>java.util.logging.ConsoleHandler</pattern>
+                                    <pattern>java.util.logging.SimpleFormatter</pattern>
+                                    <pattern>com.dukescript.presenters.iOS</pattern>
+                                </forceLinkClasses>
+                                <executableName>robovmtesting</executableName>
+                                <resources>
+                                    <resource>src/main/webapp/pages/</resource>
+                                </resources>
+                                <iosInfoPList>Info.plist.xml</iosInfoPList>
+                            </config>
+                            <includeJFX>false</includeJFX>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>it</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>iphone-sim</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

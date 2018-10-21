@@ -76,6 +76,7 @@
     <modules>
         <module>beaninfo-api</module>
         <module>beaninfo-demo</module>
+        <module>beaninfo-testing</module>
         <module>fxml-demo</module>
     </modules>
     
