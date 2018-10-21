@@ -44,8 +44,8 @@
     <properties>
         <platform.version>4.1.1.4</platform.version>
         <presenters.version>1.5.1</presenters.version>
-        <android.plugin.version>4.4.3</android.plugin.version>
-        <retrolamda.version>2.3.0</retrolamda.version>
+        <android.plugin.version>4.5.0</android.plugin.version>
+        <retrolamda.version>2.5.5</retrolamda.version>
         <android.platform.version>19</android.platform.version>
         <debug>false</debug>
     </properties>
@@ -60,6 +60,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.4</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <version>2.5.1</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -82,6 +91,13 @@
                 <groupId>net.orfjackal.retrolambda</groupId>
                 <artifactId>retrolambda-maven-plugin</artifactId>
                 <version>${retrolamda.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
+                        <version>3.8.1</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <phase>process-classes</phase>
@@ -99,6 +115,13 @@
                 <groupId>com.simpligility.maven.plugins</groupId>
                 <artifactId>android-maven-plugin</artifactId>
                 <version>${android.plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                        <version>2.3.1</version>
+                    </dependency>
+                </dependencies>
                 <extensions>true</extensions>
                 <configuration>
                     <test>

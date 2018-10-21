@@ -192,6 +192,13 @@
     </dependency>
 
     <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-base</artifactId>
+        <version>11</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
         <groupId>com.dukescript.api</groupId>
         <artifactId>junit-osgi</artifactId>
         <scope>test</scope>
