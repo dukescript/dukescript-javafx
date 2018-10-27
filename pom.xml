@@ -105,6 +105,7 @@
                     </roots>
                     <excludes>
                         <exclude>**/target/**</exclude>
+                        <exclude>**/.gradle/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
