@@ -97,7 +97,7 @@
               <extensions>true</extensions>
               <configuration>
                   <instructions>
-                      <Export-Package>javafx.webui</Export-Package>
+                      <Export-Package>javafx.webui,META-INF.services.*</Export-Package>
                       <Bundle-SymbolicName>javafx.webui</Bundle-SymbolicName>
                   </instructions>
               </configuration>
