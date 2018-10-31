@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            html, body {
+                height: 100%;
+            }
+            body {
+                margin: 0;
+            }
+            .flex-container {
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .row {
+                width: auto;
+            }
+            .flex-item {
+                padding: 5px;
+                margin: 10px;
+                line-height: 20px;       
+                font-weight: bold;
+                font-size: 2em;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="flex-container">
+            <div class="row"> 
+                <div class="flex-item"><span data-bind="text: labelText"></span></div>
+                <div class="flex-item"><button data-bind="click: action">Click me!</button></div>
+            </div>
+        </div>
+    </body>
+</html>

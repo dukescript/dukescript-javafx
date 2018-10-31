@@ -78,6 +78,7 @@
         <module>beaninfo-demo</module>
         <module>beaninfo-testing</module>
         <module>fxml-demo</module>
+        <module>beaninfo-embedded</module>
     </modules>
     
     <distributionManagement>
