@@ -57,7 +57,7 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> implements Actio
     }
 
     FXHtml4Java(Class<? extends FXBeanInfo.Provider> clazz, FXBeanInfo info) {
-        super(clazz, clazz, info.getProperties().size(), info.getFunctions().size());
+        super(clazz, clazz, info.getProperties().size(), info.getActions().size());
 
         int index = 0;
         for (Map.Entry<String, ObservableValue<?>> e : info.getProperties().entrySet()) {
@@ -68,7 +68,7 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> implements Actio
             registerProperty(name, index++, readOnly, constant);
         }
         index = 0;
-        for (Map.Entry<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> e : info.getFunctions().entrySet()) {
+        for (Map.Entry<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> e : info.getActions().entrySet()) {
             String name = e.getKey();
             registerFunction(name, index++);
         }

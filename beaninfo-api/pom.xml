@@ -128,7 +128,8 @@
                       <version>0.30</version>
                   </docletArtifact>
                   <additionalOptions>
-                      <additionalparam>-snippetpath ../beaninfo-embedded</additionalparam>
+                      <additionalparam>-snippetpath ../beaninfo-embedded/src/main/</additionalparam>
+                      <additionalparam>-hiddingannotation java.lang.Deprecated</additionalparam>
                   </additionalOptions>
               </configuration>
           </plugin>

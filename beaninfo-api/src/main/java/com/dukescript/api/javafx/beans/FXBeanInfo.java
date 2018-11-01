@@ -39,8 +39,8 @@ import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 
-/** Data with information about {@linkplain #getProperties() properties}
- * and {@linkplain #getFunctions() actions} of a JavaFX bean. Beans supporting this
+/** *  Data with information about {@linkplain #getProperties() properties}
+ * and {@link #getActions() actions} of a JavaFX bean. Beans supporting this
  * protocol should implement {@link Provider} - use its {@link Provider#getFXBeanInfo()}
  * method to obtain instance of the info for given bean.
  * <p>
@@ -94,11 +94,20 @@ public final class FXBeanInfo {
         return properties;
     }
 
+    /**
+     * @deprecated use {@link #getActions()}
+     */
+    @Deprecated
+    public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getFunctions() {
+        return functions;
+    }
+
     /** Invocable handlers for {@linkplain #getBean() this bean}.
      *
      * @return immutable map of available event handlers
+     * @since 0.3
      */
-    public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getFunctions() {
+    public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getActions() {
         return functions;
     }
 
