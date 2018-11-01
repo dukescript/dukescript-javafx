@@ -77,7 +77,6 @@
         <module>beaninfo-api</module>
         <module>beaninfo-demo</module>
         <module>beaninfo-testing</module>
-        <module>fxml-demo</module>
         <module>beaninfo-embedded</module>
     </modules>
     
@@ -121,4 +120,15 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>jdk8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <modules>
+                <module>fxml-demo</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
