@@ -46,7 +46,10 @@ import javafx.event.EventHandler;
  * <p>
  * If you have a bean willing to provide the info, use {@link FXBeanInfo#create(java.lang.Object)}
  * and {@link Builder} to create it. Then return it from your
- * {@link Provider#getFXBeanInfo()} method.
+ * {@link Provider#getFXBeanInfo()} method. Here is an example defining
+ * one string property and one action:
+ *
+ * {@codesnippet com.dukescript.javafx.fxbeaninfo.HTMLController}
  */
 public final class FXBeanInfo {
     private final Object bean;

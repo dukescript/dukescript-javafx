@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.dukescript.javafx.fxbeaninfo;
 
 /*-
@@ -39,13 +34,10 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
-/**
- *
- * @author antonepple
- */
+// BEGIN: com.dukescript.javafx.fxbeaninfo.HTMLController
 public class HTMLController implements FXBeanInfo.Provider {
-
-    private final StringProperty labelText = new SimpleStringProperty(this, "labelText", "");
+    private final StringProperty labelText =
+            new SimpleStringProperty(this, "labelText", "");
     private final Property<EventHandler<ActionEvent>> action =
             new SimpleObjectProperty<EventHandler<ActionEvent>>(
                     this, "action",
@@ -61,5 +53,5 @@ public class HTMLController implements FXBeanInfo.Provider {
     public FXBeanInfo getFXBeanInfo() {
         return info;
     }
-
 }
+// END: com.dukescript.javafx.fxbeaninfo.HTMLController

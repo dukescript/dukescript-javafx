@@ -24,11 +24,10 @@
  * #L%
  */
 
-
 /**
  * Enhanced bean introspection package. Provides a way to 
- * {@linkplain FXBeanInfo.Provider obtain}
- * {@link FXBeanInfo} for a given JavaFX bean without using
+ * {@linkplain com.dukescript.api.javafx.beans.FXBeanInfo.Provider obtain}
+ * {@link com.dukescript.api.javafx.beans.FXBeanInfo} for a given JavaFX bean without using
  * reflection.
  */
 package com.dukescript.api.javafx.beans;
