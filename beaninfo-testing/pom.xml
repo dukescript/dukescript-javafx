@@ -45,6 +45,7 @@
         <net.java.html.version>1.5.1</net.java.html.version>
         <presenters.version>1.5.2</presenters.version>
         <moe.version>1.4.1</moe.version>
+        <robovm.version>2.3.2</robovm.version>
     </properties>
 
     <dependencyManagement>
