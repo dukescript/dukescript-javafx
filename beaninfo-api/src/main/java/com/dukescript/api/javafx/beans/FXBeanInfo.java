@@ -44,7 +44,7 @@ import javafx.event.EventHandler;
  * protocol should implement {@link Provider} - use its {@link Provider#getFXBeanInfo()}
  * method to obtain instance of the info for given bean.
  * <p>
- * If you have a bean willing to provide the info, use {@link FXBeanInfo#create(java.lang.Object)}
+ * If you have a bean willing to provide the info, use {@link FXBeanInfo#newBuilder(java.lang.Object)}
  * and {@link Builder} to create it. Then return it from your
  * {@link Provider#getFXBeanInfo()} method. Here is an example defining
  * one string property and one action:
@@ -80,7 +80,7 @@ public final class FXBeanInfo {
 
     /** The associated bean.
      *
-     * @return object this info {@linkplain #create(java.lang.Object) was created} for
+     * @return object this info {@link #newBuilder(java.lang.Object) was created} for
      */
     public Object getBean() {
         return bean;
@@ -135,8 +135,8 @@ public final class FXBeanInfo {
         return null;
     }
 
-    /** Single method interface for JavaFX beans that can provide {@link FXBeanInfo}.
-     * Use {@link #create(java.lang.Object)} and {@link Builder#build()} to
+    /** *  Single method interface for JavaFX beans that can provide {@link FXBeanInfo}.
+     * Use {@link #newBuilder(java.lang.Object)} and {@link Builder#build()} to
      * create an instance of your info in your bean constructor and assign
      * it to a {@code final} field. Then return it from the {@link #getFXBeanInfo()}
      * method.
@@ -151,20 +151,29 @@ public final class FXBeanInfo {
     }
 
     /**
-     * Start creating new {@link FXBeanInfo} for a provided {@code bean}.
+     * Start creating new {@link FXBeanInfo} for provided {@code bean}.
      * Use {@link Builder} methods like {@link Builder#property(javafx.beans.property.ReadOnlyProperty)}
      * or {@link Builder#action(javafx.beans.property.ReadOnlyProperty)} followed
      * by final {@link Builder#build()} to create the info.
      *
      * @param bean the bean to create the info for
      * @return builder to create the info with
+     * @since 0.3
      */
-    public static Builder create(Object bean) {
+    public static Builder newBuilder(Object bean) {
         return new FXBeanInfo(null, null, null).new Builder(bean);
     }
 
     /**
-     * Builder (obtained via {@link #create(java.lang.Object)} method) to
+     * @deprecated use {@link #newBuilder(java.lang.Object)}
+     */
+    @Deprecated
+    public static Builder create(Object bean) {
+        return newBuilder(bean);
+    }
+
+    /**
+     * Builder (obtained via {@link #newBuilder(java.lang.Object)} method) to
      * create a description of a JavaFX bean and represent it as
      * {@link FXBeanInfo}.
      */

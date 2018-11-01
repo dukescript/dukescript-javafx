@@ -44,7 +44,7 @@ public class HTMLController implements FXBeanInfo.Provider {
                     (e) -> labelText.set("Hello World!"));
     
     private final FXBeanInfo info = FXBeanInfo
-            .create(this)
+            .newBuilder(this)
             .action(action)
             .property(labelText)
             .build();

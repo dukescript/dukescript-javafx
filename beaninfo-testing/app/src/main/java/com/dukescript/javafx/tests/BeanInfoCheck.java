@@ -34,7 +34,7 @@ import org.junit.Test;
 public class BeanInfoCheck {
     @Test
     public void beanInfoCanBeCreated() {
-        FXBeanInfo info = FXBeanInfo.create(this).build();
+        FXBeanInfo info = FXBeanInfo.newBuilder(this).build();
         assertNotNull("Bean info created", info);
     }
 }
