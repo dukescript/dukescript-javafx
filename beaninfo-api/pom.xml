@@ -72,6 +72,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <net.java.html.version>1.5.1</net.java.html.version>
+    <publicPackages>com.dukescript.api.javafx.beans,com.dukescript.spi.javafx.beans</publicPackages>
   </properties>
 
   <distributionManagement>
@@ -97,7 +98,7 @@
               <extensions>true</extensions>
               <configuration>
                   <instructions>
-                      <Export-Package>javafx.webui,META-INF.services.*</Export-Package>
+                      <Export-Package>${publicPackages},META-INF.services.*;-noimport:=true;-split-package:=first</Export-Package>
                       <Bundle-SymbolicName>javafx.webui</Bundle-SymbolicName>
                   </instructions>
               </configuration>
