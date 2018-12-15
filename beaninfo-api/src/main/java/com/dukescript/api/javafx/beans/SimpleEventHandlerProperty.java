@@ -27,31 +27,13 @@ package com.dukescript.api.javafx.beans;
  */
 
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
-/** Property representing an {@link EventHandler}. It can be used
- * at the places where one wants to hold a handler for
- * {@link ActionDataEvent} or {@link ActionEvent}.
- */
-public class SimpleEventHandlerProperty extends
+final class SimpleEventHandlerProperty extends
     SimpleObjectProperty<EventHandler<? super ActionDataEvent>>
     implements EventHandlerProperty {
 
-    public SimpleEventHandlerProperty() {
-    }
-
-    public SimpleEventHandlerProperty(
-        EventHandler<? super ActionDataEvent> handler
-    ) {
-        super(handler);
-    }
-
-    public SimpleEventHandlerProperty(Object bean, String name) {
-        super(bean, name);
-    }
-
-    public SimpleEventHandlerProperty(
+    SimpleEventHandlerProperty(
         Object bean, String name, EventHandler<? super ActionDataEvent> handler
     ) {
         super(bean, name, handler);
