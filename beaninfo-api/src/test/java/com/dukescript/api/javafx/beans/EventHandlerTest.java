@@ -28,7 +28,6 @@ package com.dukescript.api.javafx.beans;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -37,12 +36,12 @@ public class EventHandlerTest implements FXBeanInfo.Provider {
     private int count;
     private FXBeanInfo info;
 
-    @FXML
+    // @FXML
     public void incrementByOne() {
         count++;
     }
 
-    @FXML
+    // @FXML
     public void incrementByThis(ActionEvent ev) {
         if (ev == null) {
             count = -1;
@@ -52,7 +51,7 @@ public class EventHandlerTest implements FXBeanInfo.Provider {
         count += n.intValue();
     }
 
-    @FXML
+    // @FXML
     public void incrementByThisAndEvent(ActionDataEvent ev) {
         if (ev == null) {
             count = -1;
