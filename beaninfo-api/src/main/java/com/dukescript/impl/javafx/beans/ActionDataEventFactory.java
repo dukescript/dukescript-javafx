@@ -38,9 +38,6 @@ public abstract class ActionDataEventFactory {
         } catch (ClassNotFoundException ex) {
             throw new IllegalStateException(ex);
         }
-        if (INSTANCE == null) {
-            throw new IllegalStateException();
-        }
     }
 
     protected ActionDataEventFactory() {
@@ -50,6 +47,10 @@ public abstract class ActionDataEventFactory {
         INSTANCE = this;
     }
     protected abstract ActionDataEvent create(Convertor owner, FXBeanInfo.Provider model, Object source, Object event);
+
+    protected final Convertor none() {
+        return NONE;
+    }
 
     public static ActionDataEvent newEvent(Convertor owner, FXBeanInfo.Provider model, Object source, Object event) {
         return INSTANCE.create(owner, model, source, event);
@@ -64,4 +65,25 @@ public abstract class ActionDataEventFactory {
 
         public <T> T extractValue(Class<T> as, Object obj);
     }
+    private static final Convertor NONE = new Convertor() {
+        @Override
+        public Object toString(FXBeanInfo fxBeanInfo, Object event, String name) {
+            return event.toString();
+        }
+
+        @Override
+        public Object toNumber(FXBeanInfo fxBeanInfo, Object event, String name) {
+            return event instanceof Number ? event : null;
+        }
+
+        @Override
+        public <T> Object toModel(FXBeanInfo fxBeanInfo, Class<T> as, Object obj) {
+            return as.isInstance(obj) ? as.cast(obj) : null;
+        }
+
+        @Override
+        public <T> T extractValue(Class<T> as, Object obj) {
+            return as.isInstance(obj) ? as.cast(obj) : null;
+        }
+    };
 }

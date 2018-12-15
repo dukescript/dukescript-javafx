@@ -45,16 +45,22 @@ import net.java.html.json.Models;
  * is needed.
  */
 public final class ActionDataEvent extends ActionEvent {
-    private static final ActionDataEventFactory FACTORY = new ActionDataEventFactory() {
-        @Override
-        public ActionDataEvent create(ActionDataEventFactory.Convertor owner, FXBeanInfo.Provider model, Object source, Object event) {
-            return new ActionDataEvent(owner, model, source, source);
-        }
-    };
+    private static final Creator FACTORY = new Creator();
 
     private final FXBeanInfo.Provider model;
     private final ActionDataEventFactory.Convertor conv;
     private final Object event;
+
+    /** Constructs new ActionDataEvent.
+     *
+     * @param model provider of the {@link FXBeanInfo}
+     * @param source source of the event, possibly same as {@code model}
+     * @param event the event object to deliver
+     * @since 0.4
+     */
+    public ActionDataEvent(FXBeanInfo.Provider model, Object source, Object event) {
+        this(null, model, source, event);
+    }
 
     ActionDataEvent(ActionDataEventFactory.Convertor conv, FXBeanInfo.Provider model, Object source, Object event) {
         super(source, null);
@@ -73,9 +79,9 @@ public final class ActionDataEvent extends ActionEvent {
     public <T> T getProperty(Class<T> as, String name) {
         Object value;
         if (as == String.class) {
-            value = conv.toString(model.getFXBeanInfo(), event, name);
+            value = conv().toString(model.getFXBeanInfo(), event, name);
         } else if (Number.class.isAssignableFrom(as)) {
-            value = conv.toNumber(model.getFXBeanInfo(), event, name);
+            value = conv().toNumber(model.getFXBeanInfo(), event, name);
         } else {
             value = null;
         }
@@ -96,10 +102,25 @@ public final class ActionDataEvent extends ActionEvent {
     private <T> T extractValue(Class<T> as, Object d) {
         Object obj;
         if (Models.isModel(as)) {
-            obj = conv.toModel(model.getFXBeanInfo(), as, d);
+            obj = conv().toModel(model.getFXBeanInfo(), as, d);
         } else {
             obj = d;
         }
-        return conv.extractValue(as, obj);
+        return conv().extractValue(as, obj);
+    }
+
+    private ActionDataEventFactory.Convertor conv() {
+        return conv != null ? conv : FACTORY.none0();
+    }
+
+    private static class Creator extends ActionDataEventFactory {
+        @Override
+        public ActionDataEvent create(ActionDataEventFactory.Convertor owner, FXBeanInfo.Provider model, Object source, Object event) {
+            return new ActionDataEvent(owner, model, source, source);
+        }
+
+        public ActionDataEventFactory.Convertor none0() {
+            return none();
+        }
     }
 }

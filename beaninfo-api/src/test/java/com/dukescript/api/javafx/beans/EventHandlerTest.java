@@ -52,11 +52,25 @@ public class EventHandlerTest implements FXBeanInfo.Provider {
         count += n.intValue();
     }
 
+    @FXML
+    public void incrementByThisAndEvent(ActionDataEvent ev) {
+        if (ev == null) {
+            count = -1;
+            return;
+        }
+        Number n = ev.getSource(Number.class);
+        count += n.intValue();
+
+        n = ev.getProperty(Number.class, null);
+        count += n.intValue();
+    }
+
     @Before
     public void generateInfo() {
         info = FXBeanInfo.newBuilder(this)
             .action("incrementByOne", this::incrementByOne)
             .action("incrementByThis", this::incrementByThis)
+            .action("incrementByThisAndEvent", this::incrementByThisAndEvent)
             .build();
     }
 
@@ -78,6 +92,22 @@ public class EventHandlerTest implements FXBeanInfo.Provider {
         assertNotNull("it has handler", h);
         h.handle(null);
         assertEquals(-1, count);
+        ActionDataEvent ev = new ActionDataEvent(this, 3, null);
+        h.handle(ev);
+        assertEquals(2, count);
+    }
+
+    @Test
+    public void testIncrementByEvent() {
+        EventHandlerProperty p = info.getActions().get("incrementByThisAndEvent");
+        assertNotNull("property found", p);
+        final EventHandler<? super ActionDataEvent> h = p.getValue();
+        assertNotNull("it has handler", h);
+        h.handle(null);
+        assertEquals(-1, count);
+        ActionDataEvent ev = new ActionDataEvent(this, 3, 5);
+        h.handle(ev);
+        assertEquals(7, count);
     }
 
     @Override
