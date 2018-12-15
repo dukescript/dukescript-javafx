@@ -1,4 +1,4 @@
-package com.dukescript.javafx.tests;
+package com.dukescript.api.javafx.beans;
 
 /*-
  * #%L
@@ -12,10 +12,10 @@ package com.dukescript.javafx.tests;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,42 +26,48 @@ package com.dukescript.javafx.tests;
  * #L%
  */
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
 
-import com.dukescript.api.javafx.beans.EventHandlerProperty;
-import com.dukescript.api.javafx.beans.FXBeanInfo;
-import java.util.Map;
-import javafx.event.ActionEvent;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
+final class DelegateEventHandlerProperty implements EventHandlerProperty {
 
-public class BeanInfoCheck {
-    private int count;
+    private final ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p;
 
-    @Test
-    public void beanInfoCanBeCreated() {
-        FXBeanInfo info = FXBeanInfo.newBuilder(this).build();
-        assertNotNull("Bean info created", info);
+    DelegateEventHandlerProperty(ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p) {
+        this.p = p;
     }
 
-    private void handleAction(ActionEvent ev) {
-        count++;
+    @Override
+    public Object getBean() {
+        return p.getBean();
     }
 
-    @Test
-    public void beanInfoCanHaveActions() {
-        FXBeanInfo info = FXBeanInfo.newBuilder(this)
-                .action("myAction", this::handleAction)
-                .build();
-
-        assertNotNull("Bean info created", info);
-        assertEquals("One action found", 1, info.getActions().size());
-        Map.Entry<String, EventHandlerProperty> registeredAction =
-                info.getActions().entrySet().iterator().next();
-
-        assertEquals("myAction", registeredAction.getKey());
-
-        registeredAction.getValue().getValue().handle(null);
-        assertEquals("Action was called", 1, count);
+    @Override
+    public String getName() {
+        return p.getName();
     }
+
+    @Override
+    public void addListener(ChangeListener<? super EventHandler<? super ActionDataEvent>> cl) {
+    }
+
+    @Override
+    public void removeListener(ChangeListener<? super EventHandler<? super ActionDataEvent>> cl) {
+    }
+
+    @Override
+    public EventHandler<? super ActionDataEvent> getValue() {
+        return p.getValue();
+    }
+
+    @Override
+    public void addListener(InvalidationListener il) {
+    }
+
+    @Override
+    public void removeListener(InvalidationListener il) {
+    }
+
 }

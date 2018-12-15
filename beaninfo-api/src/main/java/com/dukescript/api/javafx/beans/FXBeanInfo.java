@@ -55,12 +55,12 @@ public final class FXBeanInfo {
     private final Object bean;
     private final Object extra;
     private final Map<String, ObservableValue<?>> properties;
-    private final Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions;
+    private final Map<String, EventHandlerProperty> functions;
 
     private FXBeanInfo(
         Object bean,
         Map<String, ObservableValue<?>> properties,
-        Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions
+        Map<String, EventHandlerProperty> functions
     ) {
         this.bean = bean;
         this.properties = properties == null ? Collections.emptyMap() : Collections.unmodifiableMap(properties);
@@ -98,16 +98,16 @@ public final class FXBeanInfo {
      * @deprecated use {@link #getActions()}
      */
     @Deprecated
-    public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getFunctions() {
+    public Map<String, EventHandlerProperty> getFunctions() {
         return functions;
     }
 
     /** Invocable handlers for {@linkplain #getBean() this bean}.
      *
-     * @return immutable map of available event handlers
+     * @return immutable map of available {@link EventHandler event handlers}
      * @since 0.3
      */
-    public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getActions() {
+    public Map<String, EventHandlerProperty> getActions() {
         return functions;
     }
 
@@ -180,7 +180,7 @@ public final class FXBeanInfo {
     public final class Builder {
         private Object bean;
         private Map<String, ObservableValue<?>> properties;
-        private Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions;
+        private Map<String, EventHandlerProperty> functions;
 
         Builder(Object bean) {
             this.bean = bean;
@@ -222,7 +222,35 @@ public final class FXBeanInfo {
             return property(name, new ConstantValue<T>(value));
         }
 
+        /** Registers new property.
+         *
+         * @param name name of the property
+         * @param handler parameter-less handler
+         * @since 0.4
+         * @return
+         */
+        public Builder action(String name, Runnable handler) {
+            SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, new EventHandler<ActionDataEvent>() {
+                @Override
+                public void handle(ActionDataEvent t) {
+                    handler.run();
+                }
+            });
+            return action(prop);
+        }
+
+        public Builder action(String name, EventHandler<? super ActionDataEvent> handler) {
+            SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, handler);
+            return action(prop);
+        }
+
         public Builder action(ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p) {
+            EventHandlerProperty ehp;
+            if (p instanceof EventHandlerProperty) {
+                ehp = (EventHandlerProperty) p;
+            } else {
+                ehp = new DelegateEventHandlerProperty(p);
+            }
             if (this.functions == null) {
                 this.functions = new LinkedHashMap<>();
             }
@@ -230,7 +258,7 @@ public final class FXBeanInfo {
             if (name == null) {
                 throw new NullPointerException("No name for " + p);
             }
-            ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> prev = this.functions.put(name, p);
+            EventHandlerProperty prev = this.functions.put(name, ehp);
             if (prev != null) {
                 this.functions.put(name, prev);
                 throw new IllegalArgumentException("Cannot redefine " + prev + " with " + p);

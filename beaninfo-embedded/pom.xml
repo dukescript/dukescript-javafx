@@ -116,7 +116,7 @@
             <groupId>org.netbeans.html</groupId>
             <artifactId>net.java.html.boot.fx</artifactId>
             <version>${net.java.html.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>

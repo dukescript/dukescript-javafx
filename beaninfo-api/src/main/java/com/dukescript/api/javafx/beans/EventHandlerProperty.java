@@ -1,4 +1,4 @@
-package com.dukescript.javafx.tests;
+package com.dukescript.api.javafx.beans;
 
 /*-
  * #%L
@@ -12,10 +12,10 @@ package com.dukescript.javafx.tests;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,42 +26,24 @@ package com.dukescript.javafx.tests;
  * #L%
  */
 
-
-import com.dukescript.api.javafx.beans.EventHandlerProperty;
-import com.dukescript.api.javafx.beans.FXBeanInfo;
-import java.util.Map;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.event.ActionEvent;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
+import javafx.event.EventHandler;
 
-public class BeanInfoCheck {
-    private int count;
-
-    @Test
-    public void beanInfoCanBeCreated() {
-        FXBeanInfo info = FXBeanInfo.newBuilder(this).build();
-        assertNotNull("Bean info created", info);
-    }
-
-    private void handleAction(ActionEvent ev) {
-        count++;
-    }
-
-    @Test
-    public void beanInfoCanHaveActions() {
-        FXBeanInfo info = FXBeanInfo.newBuilder(this)
-                .action("myAction", this::handleAction)
-                .build();
-
-        assertNotNull("Bean info created", info);
-        assertEquals("One action found", 1, info.getActions().size());
-        Map.Entry<String, EventHandlerProperty> registeredAction =
-                info.getActions().entrySet().iterator().next();
-
-        assertEquals("myAction", registeredAction.getKey());
-
-        registeredAction.getValue().getValue().handle(null);
-        assertEquals("Action was called", 1, count);
-    }
+/** Property representing an {@link EventHandler}. It can be used
+ * at the places where
+ * n Enhanced version of {@link ActionEvent}. Actions that can be invoked
+ * on a {@linkplain FXBeanInfo#getBean() bean} are
+ * {@linkplain FXBeanInfo#getFunctions() represented as properties}
+ * with  that accepts {@link ActionEvent} or its
+ * {@link ActionDataEvent} subclass.
+ * <p>
+ * Stick to {@link ActionEvent} if it provides enough information. Use
+ * this subclass if additional
+ * information about the
+ * {@link #getProperty(java.lang.Class, java.lang.String) event properties}
+ * or type-safe view of the {@link #getSource(java.lang.Class) event source}
+ * is needed.
+ */
+public interface EventHandlerProperty extends ReadOnlyProperty<EventHandler<? super ActionDataEvent>> {
 }

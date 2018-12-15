@@ -1,4 +1,4 @@
-package com.dukescript.javafx.tests;
+package com.dukescript.api.javafx.beans;
 
 /*-
  * #%L
@@ -12,10 +12,10 @@ package com.dukescript.javafx.tests;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,42 +26,34 @@ package com.dukescript.javafx.tests;
  * #L%
  */
 
-
-import com.dukescript.api.javafx.beans.EventHandlerProperty;
-import com.dukescript.api.javafx.beans.FXBeanInfo;
-import java.util.Map;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
+import javafx.event.EventHandler;
 
-public class BeanInfoCheck {
-    private int count;
+/** Property representing an {@link EventHandler}. It can be used
+ * at the places where one wants to hold a handler for
+ * {@link ActionDataEvent} or {@link ActionEvent}.
+ */
+public class SimpleEventHandlerProperty extends
+    SimpleObjectProperty<EventHandler<? super ActionDataEvent>>
+    implements EventHandlerProperty {
 
-    @Test
-    public void beanInfoCanBeCreated() {
-        FXBeanInfo info = FXBeanInfo.newBuilder(this).build();
-        assertNotNull("Bean info created", info);
+    public SimpleEventHandlerProperty() {
     }
 
-    private void handleAction(ActionEvent ev) {
-        count++;
+    public SimpleEventHandlerProperty(
+        EventHandler<? super ActionDataEvent> handler
+    ) {
+        super(handler);
     }
 
-    @Test
-    public void beanInfoCanHaveActions() {
-        FXBeanInfo info = FXBeanInfo.newBuilder(this)
-                .action("myAction", this::handleAction)
-                .build();
+    public SimpleEventHandlerProperty(Object bean, String name) {
+        super(bean, name);
+    }
 
-        assertNotNull("Bean info created", info);
-        assertEquals("One action found", 1, info.getActions().size());
-        Map.Entry<String, EventHandlerProperty> registeredAction =
-                info.getActions().entrySet().iterator().next();
-
-        assertEquals("myAction", registeredAction.getKey());
-
-        registeredAction.getValue().getValue().handle(null);
-        assertEquals("Action was called", 1, count);
+    public SimpleEventHandlerProperty(
+        Object bean, String name, EventHandler<? super ActionDataEvent> handler
+    ) {
+        super(bean, name, handler);
     }
 }
