@@ -140,6 +140,7 @@
                         <!--<package>your.package.name</package> -->
                         <!--</packages> -->
                     </test>
+                    <testFailSafe>false</testFailSafe>
                     <assetsDirectory>src/main/webapp</assetsDirectory>
                     <apkDebug>${debug}</apkDebug>
                     <resourceDirectory>target/res</resourceDirectory>
