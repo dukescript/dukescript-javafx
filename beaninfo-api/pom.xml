@@ -118,9 +118,12 @@
               <version>3.0.1</version>
               <configuration>
                   <subpackages>com.dukescript.api.javafx.beans</subpackages>
-                  <links>
-                      <link>https://docs.oracle.com/javase/8/javafx/api/</link>
-                  </links>
+                  <offlineLinks>
+                      <offlineLink>
+                          <url>https://docs.oracle.com/javase/8/javafx/api/</url>
+                          <location>https://docs.oracle.com/javase/8/javafx/api/</location>
+                      </offlineLink>
+                  </offlineLinks>
                   <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
                   <docletArtifact>
                       <groupId>org.apidesign.javadoc</groupId>

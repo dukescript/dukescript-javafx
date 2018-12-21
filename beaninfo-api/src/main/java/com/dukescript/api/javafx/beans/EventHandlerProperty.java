@@ -34,8 +34,8 @@ import javafx.event.EventHandler;
  * {@link FXBeanInfo.Builder#action} methods to create instance of the 
  * property rather than implementing the interface manually.
  * <p>
- * The following example defines a class with three action methods
- * the uses their handle references to register them into the builder:
+ * The following example defines a class with three action methods and
+ * then uses their handle references to register them into the builder:
  * <p>
  * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
  * <p>
