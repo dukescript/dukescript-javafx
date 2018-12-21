@@ -102,10 +102,14 @@ public final class FXBeanInfo {
         return functions;
     }
 
-    /** Invocable handlers for {@linkplain #getBean() this bean}.
+    /** {@link EventHandler} properties for {@linkplain #getBean() this bean}.
+     * Use following code to invoke them:
+     * <p>
+     * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#invokeEventHandlerProperty}
      *
      * @return immutable map of available {@link EventHandler event handlers}
-     * @since 0.3
+     * @since 0.4
+     * @see ActionDataEvent
      */
     public Map<String, EventHandlerProperty> getActions() {
         return functions;

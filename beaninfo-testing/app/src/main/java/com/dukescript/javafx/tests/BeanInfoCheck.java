@@ -32,6 +32,7 @@ import com.dukescript.api.javafx.beans.EventHandlerProperty;
 import com.dukescript.api.javafx.beans.FXBeanInfo;
 import java.util.Map;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
@@ -98,9 +99,17 @@ public class BeanInfoCheck {
         EventHandlerProperty addSource = actions.get("actionWithEvent");
         addSource.getValue().handle(new ActionDataEvent(bean, 4, null));
         assertEquals("Action was called", 5, bean.count);
-
-        EventHandlerProperty addData = actions.get("actionWithData");
-        addData.getValue().handle(new ActionDataEvent(bean, 7, 13));
+        dispatchEvent(bean, "actionWithData");
         assertEquals("Action was called", 25, bean.count);
     }
+
+    // BEGIN: com.dukescript.javafx.tests.BeanInfoCheck#invokeEventHandlerProperty
+    private static void dispatchEvent(FXBeanInfo.Provider bean, String name) {
+        final FXBeanInfo info = bean.getFXBeanInfo();
+        final Map<String, EventHandlerProperty> actions = info.getActions();
+        EventHandlerProperty property = actions.get(name);
+        final EventHandler<? super ActionDataEvent> handler = property.getValue();
+        handler.handle(new ActionDataEvent(bean, 7, 13));
+    }
+    // END: com.dukescript.javafx.tests.BeanInfoCheck#invokeEventHandlerProperty
 }

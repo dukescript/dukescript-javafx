@@ -33,7 +33,7 @@ import net.java.html.json.Models;
 
 /** Enhanced version of {@link ActionEvent}. Actions that can be invoked
  * on a {@linkplain FXBeanInfo#getBean() bean} are
- * {@linkplain FXBeanInfo#getFunctions() represented as properties}
+ * {@linkplain FXBeanInfo#getActions() () represented as event handler properties}
  * with {@link EventHandler} that accepts {@link ActionEvent} or its
  * {@link ActionDataEvent} subclass.
  * <p>
@@ -51,7 +51,10 @@ public final class ActionDataEvent extends ActionEvent {
     private final ActionDataEventFactory.Convertor conv;
     private final Object event;
 
-    /** Constructs new ActionDataEvent.
+    /** Constructs new event. Useful for invoking actions provided by 
+     * JavaFX beans:
+     * <p>
+     * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#invokeEventHandlerProperty}
      *
      * @param model provider of the {@link FXBeanInfo}
      * @param source source of the event, possibly same as {@code model}
