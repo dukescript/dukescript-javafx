@@ -25,32 +25,11 @@ package com.dukescript.javafx.fxbeaninfo;
  * THE SOFTWARE.
  * #L%
  */
-
-import com.dukescript.api.javafx.beans.FXBeanInfo;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-
-// BEGIN: com.dukescript.javafx.fxbeaninfo.HTMLController
-public class HTMLController implements FXBeanInfo.Provider {
-    private final StringProperty labelText =
-            new SimpleStringProperty(this, "labelText", "");
-    
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        labelText.set("Hello World!");
+public final class Main {
+    private Main() {
     }
-
-    private final FXBeanInfo info = FXBeanInfo
-            .newBuilder(this)
-            .action("action", this::handleButtonAction)
-            .property(labelText)
-            .build();
     
-    @Override
-    public FXBeanInfo getFXBeanInfo() {
-        return info;
+    public static void main(String... args) {
+        MainApp.launch(MainApp.class, args);
     }
 }
-// END: com.dukescript.javafx.fxbeaninfo.HTMLController
