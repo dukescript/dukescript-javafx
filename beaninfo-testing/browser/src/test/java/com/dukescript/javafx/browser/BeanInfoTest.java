@@ -36,6 +36,6 @@ import org.junit.runner.RunWith;
 public class BeanInfoTest extends BeanInfoCheck {
     @Test
     public void verifySimpleTest() {
-        assertEquals(Integer.valueOf("5"), new Integer(5));
+        assertEquals(Integer.valueOf("5"), Integer.valueOf(5));
     }
 }
