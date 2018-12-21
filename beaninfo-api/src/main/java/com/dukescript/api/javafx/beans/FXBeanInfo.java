@@ -37,6 +37,7 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 /** *  Data with information about {@linkplain #getProperties() properties}
@@ -182,7 +183,7 @@ public final class FXBeanInfo {
      * {@link FXBeanInfo}.
      */
     public final class Builder {
-        private Object bean;
+        private final Object bean;
         private Map<String, ObservableValue<?>> properties;
         private Map<String, EventHandlerProperty> functions;
 
@@ -190,21 +191,21 @@ public final class FXBeanInfo {
             this.bean = bean;
         }
 
-        /** Registers another property into be builder.
+        /** Registers a property into the builder.
          *
          * @param p the property
-         * @return {@code this}
+         * @return {@code this} builder
          */
         public Builder property(ReadOnlyProperty<?> p) {
             return property(p.getName(), p);
         }
 
-        /** Registers another property/value with provided name into the
+        /** Registers a property/value with provided name into the
          * builder.
          *
          * @param name non-null name of the property
          * @param p the observable value
-         * @return {@code this}
+         * @return {@code this} builder
          */
         public Builder property(String name, ObservableValue<?> p) {
             Objects.requireNonNull(p, "Property must have a name: " + p);
@@ -220,34 +221,57 @@ public final class FXBeanInfo {
          * @param <T> type of the value
          * @param name non-null name of the property
          * @param value the constant value of the property
-         * @return {@code this}
+         * @return {@code this} builder
          */
         public <T> Builder constant(String name, T value) {
-            return property(name, new ConstantValue<T>(value));
+            return property(name, new ConstantValue<>(value));
         }
 
-        /** Registers new property.
+        /** Registers parameter-less action. Works well with method
+         * references to parameter-less methods. Following example defines 
+         * one such action:
+         * <p>
+         * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
          *
          * @param name name of the property
          * @param handler parameter-less handler
          * @since 0.4
-         * @return
+         * @return {@code this} builder
          */
         public Builder action(String name, Runnable handler) {
-            SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, new EventHandler<ActionDataEvent>() {
-                @Override
-                public void handle(ActionDataEvent t) {
-                    handler.run();
-                }
+            SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, (ActionDataEvent t) -> {
+                handler.run();
             });
             return action(prop);
         }
 
+        /** Registers action with event parameter. Works well with
+         * references to methods that accept {@link ActionEvent} or
+         * {@link ActionDataEvent} parameter. Following example defines 
+         * such actions:
+         * <p>
+         * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
+         *
+         * @param name name of the property
+         * @param handler parameter-less handler
+         * @since 0.4
+         * @return {@code this} builder
+         */
         public Builder action(String name, EventHandler<? super ActionDataEvent> handler) {
             SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, handler);
             return action(prop);
         }
 
+        /** Registers action property. Actions are defined as {@link EventHandlerProperty}
+         * instances. This method allows direct registration of such property. However,
+         * rather than using this method directly, consider registering the
+         * actions via method references:
+         * <p>
+         * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
+         *
+         * @param p instance of {@link EventHandlerProperty} to register
+         * @return {@code this} builder
+         */
         public Builder action(ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p) {
             EventHandlerProperty ehp;
             if (p instanceof EventHandlerProperty) {
