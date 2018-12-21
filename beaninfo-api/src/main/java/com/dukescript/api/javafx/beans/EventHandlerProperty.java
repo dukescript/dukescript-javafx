@@ -30,20 +30,21 @@ import javafx.beans.property.ReadOnlyProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
-/** Property representing an {@link EventHandler}. It can be used
- * at the places where
- * n Enhanced version of {@link ActionEvent}. Actions that can be invoked
- * on a {@linkplain FXBeanInfo#getBean() bean} are
- * {@linkplain FXBeanInfo#getFunctions() represented as properties}
- * with  that accepts {@link ActionEvent} or its
- * {@link ActionDataEvent} subclass.
+/** Property representing an {@link EventHandler}. Use one of
+ * {@link FXBeanInfo.Builder#action} methods to create instance of the 
+ * property rather than implementing the interface manually.
  * <p>
- * Stick to {@link ActionEvent} if it provides enough information. Use
- * this subclass if additional
- * information about the
- * {@link #getProperty(java.lang.Class, java.lang.String) event properties}
- * or type-safe view of the {@link #getSource(java.lang.Class) event source}
- * is needed.
+ * The following example defines a class with three action methods
+ * the uses their handle references to register them into the builder:
+ * <p>
+ * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
+ * <p>
+ * The handler method may take no arguments, a single {@link ActionEvent} parameter
+ * or a single {@link ActionDataEvent} parameter.
+ * The registered methods are then accessible via {@link FXBeanInfo#getActions()}
+ * map.
+ * 
+ * @since 0.4
  */
 public interface EventHandlerProperty extends ReadOnlyProperty<EventHandler<? super ActionDataEvent>> {
 }
