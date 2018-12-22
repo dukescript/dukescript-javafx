@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -262,12 +263,18 @@ public final class FXBeanInfo {
             return action(prop);
         }
 
-        /** Registers action property. Actions are defined as {@link EventHandlerProperty}
+        /** Generic way to register an action property.
+         * Actions are defined as {@link EventHandlerProperty}
          * instances. This method allows direct registration of such property. However,
          * rather than using this method directly, consider registering the
          * actions via method references:
          * <p>
          * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
+         * <p>
+         * In case manipulation with actual {@link ObjectProperty} is needed, here
+         * is an example showing a path through all the generic signatures:
+         * <p>
+         * {@codesnippet com.dukescript.api.javafx.beans.EventHandlerPropertyTest#actionProperty}
          *
          * @param p instance of {@link EventHandlerProperty} to register
          * @return {@code this} builder

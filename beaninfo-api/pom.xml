@@ -131,6 +131,7 @@
                       <version>0.30</version>
                   </docletArtifact>
                   <additionalOptions>
+                      <additionalparam>-snippetpath src/test/</additionalparam>
                       <additionalparam>-snippetpath ../beaninfo-embedded/src/main/</additionalparam>
                       <additionalparam>-snippetpath ../beaninfo-testing/app/src/main/</additionalparam>
                       <additionalparam>-hiddingannotation java.lang.Deprecated</additionalparam>
