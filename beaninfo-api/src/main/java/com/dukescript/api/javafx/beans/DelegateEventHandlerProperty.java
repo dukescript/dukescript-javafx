@@ -1,4 +1,4 @@
-package com.dukescript.javafx.fxbeaninfo;
+package com.dukescript.api.javafx.beans;
 
 /*-
  * #%L
@@ -12,10 +12,10 @@ package com.dukescript.javafx.fxbeaninfo;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,31 +26,48 @@ package com.dukescript.javafx.fxbeaninfo;
  * #L%
  */
 
-import com.dukescript.api.javafx.beans.FXBeanInfo;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
+import javafx.beans.InvalidationListener;
+import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
 
-// BEGIN: com.dukescript.javafx.fxbeaninfo.HTMLController
-public class HTMLController implements FXBeanInfo.Provider {
-    private final StringProperty labelText =
-            new SimpleStringProperty(this, "labelText", "");
-    
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        labelText.set("Hello World!");
+final class DelegateEventHandlerProperty implements EventHandlerProperty {
+
+    private final ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p;
+
+    DelegateEventHandlerProperty(ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p) {
+        this.p = p;
     }
 
-    private final FXBeanInfo info = FXBeanInfo
-            .newBuilder(this)
-            .action("action", this::handleButtonAction)
-            .property(labelText)
-            .build();
-    
     @Override
-    public FXBeanInfo getFXBeanInfo() {
-        return info;
+    public Object getBean() {
+        return p.getBean();
     }
+
+    @Override
+    public String getName() {
+        return p.getName();
+    }
+
+    @Override
+    public void addListener(ChangeListener<? super EventHandler<? super ActionDataEvent>> cl) {
+    }
+
+    @Override
+    public void removeListener(ChangeListener<? super EventHandler<? super ActionDataEvent>> cl) {
+    }
+
+    @Override
+    public EventHandler<? super ActionDataEvent> getValue() {
+        return p.getValue();
+    }
+
+    @Override
+    public void addListener(InvalidationListener il) {
+    }
+
+    @Override
+    public void removeListener(InvalidationListener il) {
+    }
+
 }
-// END: com.dukescript.javafx.fxbeaninfo.HTMLController

@@ -76,6 +76,7 @@
                 <version>2.9</version>
                 <executions>
                     <execution>
+                        <id>unpackage-deps</id>
                         <phase>process-classes</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
@@ -84,6 +85,42 @@
                             <includeScope>runtime</includeScope>
                             <outputDirectory>${project.build.directory}/classes</outputDirectory>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <id>dalvik-sdk</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>dalvik-sdk</includeArtifactIds>
+                            <includeScope>runtime</includeScope>
+                            <outputDirectory>${project.build.directory}/zips</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>dalvik-sdk</id>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <tasks>
+                                <unzip src="${basedir}/target/zips/dalvik-sdk/rt/lib/ext/jfxrt.jar" dest="${basedir}/target/classes/">
+                                    <patternset>
+                                       <include name="javafx/beans/**"/>
+                                       <include name="javafx/event/**"/>
+                                    </patternset>
+                                    </unzip>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -140,6 +177,7 @@
                         <!--<package>your.package.name</package> -->
                         <!--</packages> -->
                     </test>
+                    <testFailSafe>false</testFailSafe>
                     <assetsDirectory>src/main/webapp</assetsDirectory>
                     <apkDebug>${debug}</apkDebug>
                     <resourceDirectory>target/res</resourceDirectory>
@@ -187,6 +225,12 @@
             <artifactId>android</artifactId>
             <version>${platform.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.javafxports</groupId>
+            <artifactId>dalvik-sdk</artifactId>
+            <version>8.60.11</version>
+            <type>zip</type>
         </dependency>
         <dependency>
             <groupId>com.google.android</groupId>

@@ -27,6 +27,7 @@ package com.dukescript.impl.javafx.beans;
  */
 
 import com.dukescript.api.javafx.beans.ActionDataEvent;
+import com.dukescript.api.javafx.beans.EventHandlerProperty;
 import com.dukescript.api.javafx.beans.FXBeanInfo;
 import java.util.Map;
 import javafx.beans.property.Property;
@@ -68,7 +69,7 @@ final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> implements Actio
             registerProperty(name, index++, readOnly, constant);
         }
         index = 0;
-        for (Map.Entry<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> e : info.getActions().entrySet()) {
+        for (Map.Entry<String, EventHandlerProperty> e : info.getActions().entrySet()) {
             String name = e.getKey();
             registerFunction(name, index++);
         }

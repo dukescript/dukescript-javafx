@@ -35,8 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
 /** *  Data with information about {@linkplain #getProperties() properties}
@@ -55,12 +57,12 @@ public final class FXBeanInfo {
     private final Object bean;
     private final Object extra;
     private final Map<String, ObservableValue<?>> properties;
-    private final Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions;
+    private final Map<String, EventHandlerProperty> functions;
 
     private FXBeanInfo(
         Object bean,
         Map<String, ObservableValue<?>> properties,
-        Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions
+        Map<String, EventHandlerProperty> functions
     ) {
         this.bean = bean;
         this.properties = properties == null ? Collections.emptyMap() : Collections.unmodifiableMap(properties);
@@ -98,16 +100,20 @@ public final class FXBeanInfo {
      * @deprecated use {@link #getActions()}
      */
     @Deprecated
-    public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getFunctions() {
+    public Map<String, EventHandlerProperty> getFunctions() {
         return functions;
     }
 
-    /** Invocable handlers for {@linkplain #getBean() this bean}.
+    /** {@link EventHandler} properties for {@linkplain #getBean() this bean}.
+     * Use following code to invoke them:
+     * <p>
+     * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#invokeEventHandlerProperty}
      *
-     * @return immutable map of available event handlers
-     * @since 0.3
+     * @return immutable map of available {@link EventHandler event handlers}
+     * @since 0.4
+     * @see ActionDataEvent
      */
-    public Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> getActions() {
+    public Map<String, EventHandlerProperty> getActions() {
         return functions;
     }
 
@@ -178,29 +184,29 @@ public final class FXBeanInfo {
      * {@link FXBeanInfo}.
      */
     public final class Builder {
-        private Object bean;
+        private final Object bean;
         private Map<String, ObservableValue<?>> properties;
-        private Map<String, ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> functions;
+        private Map<String, EventHandlerProperty> functions;
 
         Builder(Object bean) {
             this.bean = bean;
         }
 
-        /** Registers another property into be builder.
+        /** Registers a property into the builder.
          *
          * @param p the property
-         * @return {@code this}
+         * @return {@code this} builder
          */
         public Builder property(ReadOnlyProperty<?> p) {
             return property(p.getName(), p);
         }
 
-        /** Registers another property/value with provided name into the
+        /** Registers a property/value with provided name into the
          * builder.
          *
          * @param name non-null name of the property
          * @param p the observable value
-         * @return {@code this}
+         * @return {@code this} builder
          */
         public Builder property(String name, ObservableValue<?> p) {
             Objects.requireNonNull(p, "Property must have a name: " + p);
@@ -216,13 +222,80 @@ public final class FXBeanInfo {
          * @param <T> type of the value
          * @param name non-null name of the property
          * @param value the constant value of the property
-         * @return {@code this}
+         * @return {@code this} builder
          */
         public <T> Builder constant(String name, T value) {
-            return property(name, new ConstantValue<T>(value));
+            return property(name, new ConstantValue<>(value));
         }
 
+        /** Registers parameter-less action. Works well with method
+         * references to parameter-less methods. Following example defines 
+         * one such action:
+         * <p>
+         * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
+         *
+         * @param name name of the property
+         * @param handler parameter-less handler
+         * @since 0.4
+         * @return {@code this} builder
+         */
+        public Builder action(String name, Runnable handler) {
+            SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, (ActionDataEvent t) -> {
+                handler.run();
+            });
+            return action(prop);
+        }
+
+        /** Registers action with event parameter. Works well with
+         * references to methods that accept {@link ActionEvent} or
+         * {@link ActionDataEvent} parameter. Following example defines 
+         * such actions:
+         * <p>
+         * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
+         *
+         * @param name name of the property
+         * @param handler parameter-less handler
+         * @since 0.4
+         * @return {@code this} builder
+         */
+        public Builder action(String name, EventHandler<? super ActionDataEvent> handler) {
+            SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, handler);
+            return action(prop);
+        }
+
+        /** @deprecated to be removed, use {@link #action(com.dukescript.api.javafx.beans.EventHandlerProperty)}
+         * @deprecated
+         */
+        @Deprecated
         public Builder action(ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p) {
+            System.err.println("this method will be removed: " + p);
+            EventHandlerProperty ehp;
+            if (p instanceof EventHandlerProperty) {
+                ehp = (EventHandlerProperty) p;
+            } else {
+                ehp = new DelegateEventHandlerProperty(p);
+            }
+            return action(ehp);
+        }
+
+        /** Generic way to register an action property.
+         * Actions are defined as {@link EventHandlerProperty}
+         * instances. This method allows direct registration of such property. However,
+         * rather than using this method directly, consider registering the
+         * actions via method references:
+         * <p>
+         * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
+         * <p>
+         * In case manipulation with actual {@link ObjectProperty} is needed, here
+         * is an example showing a path through all the generic signatures:
+         * <p>
+         * {@codesnippet com.dukescript.api.javafx.beans.EventHandlerPropertyTest#CountingBean}
+         *
+         * @param p instance of {@link EventHandlerProperty} to register
+         * @return {@code this} builder
+         * @since 0.4
+         */
+        public Builder action(EventHandlerProperty p) {
             if (this.functions == null) {
                 this.functions = new LinkedHashMap<>();
             }
@@ -230,7 +303,7 @@ public final class FXBeanInfo {
             if (name == null) {
                 throw new NullPointerException("No name for " + p);
             }
-            ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> prev = this.functions.put(name, p);
+            EventHandlerProperty prev = this.functions.put(name, p);
             if (prev != null) {
                 this.functions.put(name, prev);
                 throw new IllegalArgumentException("Cannot redefine " + prev + " with " + p);

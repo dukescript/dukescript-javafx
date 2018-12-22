@@ -37,7 +37,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.dukescript.javafx.fxbeaninfo.MainApp</mainClass>
+        <mainClass>com.dukescript.javafx.fxbeaninfo.Main</mainClass>
         <net.java.html.version>1.5.1</net.java.html.version>
     </properties>
 
@@ -116,7 +116,7 @@
             <groupId>org.netbeans.html</groupId>
             <artifactId>net.java.html.boot.fx</artifactId>
             <version>${net.java.html.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>

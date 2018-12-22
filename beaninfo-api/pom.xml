@@ -118,9 +118,12 @@
               <version>3.0.1</version>
               <configuration>
                   <subpackages>com.dukescript.api.javafx.beans</subpackages>
-                  <links>
-                      <link>https://docs.oracle.com/javase/8/javafx/api/</link>
-                  </links>
+                  <offlineLinks>
+                      <offlineLink>
+                          <url>https://docs.oracle.com/javase/8/javafx/api/</url>
+                          <location>https://docs.oracle.com/javase/8/javafx/api/</location>
+                      </offlineLink>
+                  </offlineLinks>
                   <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
                   <docletArtifact>
                       <groupId>org.apidesign.javadoc</groupId>
@@ -128,7 +131,9 @@
                       <version>0.30</version>
                   </docletArtifact>
                   <additionalOptions>
+                      <additionalparam>-snippetpath src/test/</additionalparam>
                       <additionalparam>-snippetpath ../beaninfo-embedded/src/main/</additionalparam>
+                      <additionalparam>-snippetpath ../beaninfo-testing/app/src/main/</additionalparam>
                       <additionalparam>-hiddingannotation java.lang.Deprecated</additionalparam>
                   </additionalOptions>
               </configuration>
@@ -165,6 +170,21 @@
                   <useReleaseProfile>false</useReleaseProfile>
                   <arguments>-Pjvnet-release -Pgpg</arguments>
                   <tag>release-${releaseVersion}</tag>
+              </configuration>
+          </plugin>
+          <plugin>
+              <groupId>org.netbeans.tools</groupId>
+              <artifactId>sigtest-maven-plugin</artifactId>
+              <version>1.1</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>generate</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <configuration>
+                  <packages>com.dukescript.api.javafx.beans,com.dukescript.spi.javafx.beans</packages>
               </configuration>
           </plugin>
       </plugins>

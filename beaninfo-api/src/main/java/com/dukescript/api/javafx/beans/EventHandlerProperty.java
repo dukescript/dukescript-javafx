@@ -1,4 +1,4 @@
-package com.dukescript.javafx.fxbeaninfo;
+package com.dukescript.api.javafx.beans;
 
 /*-
  * #%L
@@ -12,10 +12,10 @@ package com.dukescript.javafx.fxbeaninfo;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,31 +26,30 @@ package com.dukescript.javafx.fxbeaninfo;
  * #L%
  */
 
-import com.dukescript.api.javafx.beans.FXBeanInfo;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.ReadOnlyProperty;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
+import javafx.event.EventHandler;
 
-// BEGIN: com.dukescript.javafx.fxbeaninfo.HTMLController
-public class HTMLController implements FXBeanInfo.Provider {
-    private final StringProperty labelText =
-            new SimpleStringProperty(this, "labelText", "");
-    
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        labelText.set("Hello World!");
-    }
-
-    private final FXBeanInfo info = FXBeanInfo
-            .newBuilder(this)
-            .action("action", this::handleButtonAction)
-            .property(labelText)
-            .build();
-    
-    @Override
-    public FXBeanInfo getFXBeanInfo() {
-        return info;
-    }
+/** Property representing an {@link EventHandler}. Use one of
+ * {@link FXBeanInfo.Builder#action} methods to create instance of the 
+ * property rather than implementing the interface manually.
+ * <p>
+ * The following example defines a class with three action methods and
+ * then uses their handle references to register them into the builder:
+ * <p>
+ * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
+ * <p>
+ * The handler method may take no arguments, a single {@link ActionEvent} parameter
+ * or a single {@link ActionDataEvent} parameter.
+ * The registered methods are then accessible via {@link FXBeanInfo#getActions()}
+ * map.
+ * <p>
+ * There is also a way to register the actions directly via properties.
+ * Here is an example:
+ * <p>
+ * {@codesnippet com.dukescript.api.javafx.beans.EventHandlerPropertyTest#CountingBean}
+ *
+ * @since 0.4
+ */
+public interface EventHandlerProperty extends ReadOnlyProperty<EventHandler<? super ActionDataEvent>> {
 }
-// END: com.dukescript.javafx.fxbeaninfo.HTMLController
