@@ -43,7 +43,12 @@ import javafx.event.EventHandler;
  * or a single {@link ActionDataEvent} parameter.
  * The registered methods are then accessible via {@link FXBeanInfo#getActions()}
  * map.
- * 
+ * <p>
+ * There is also a way to register the actions directly via properties.
+ * Here is an example:
+ * <p>
+ * {@codesnippet com.dukescript.api.javafx.beans.EventHandlerPropertyTest#CountingBean}
+ *
  * @since 0.4
  */
 public interface EventHandlerProperty extends ReadOnlyProperty<EventHandler<? super ActionDataEvent>> {

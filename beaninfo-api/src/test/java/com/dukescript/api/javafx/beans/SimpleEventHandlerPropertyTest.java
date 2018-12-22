@@ -26,32 +26,28 @@ package com.dukescript.api.javafx.beans;
  * #L%
  */
 
-import javafx.beans.property.ReadOnlyProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
-public class EventHandlerPropertyTest {
-    // BEGIN: com.dukescript.api.javafx.beans.EventHandlerPropertyTest#actionProperty
+public class SimpleEventHandlerPropertyTest {
+    // BEGIN: com.dukescript.api.javafx.beans.EventHandlerPropertyTest#CountingBean
     class CountingBean implements FXBeanInfo.Provider {
         private int count;
 
-        final ReadOnlyProperty<EventHandler<Event>> incrementAction =
-        new SimpleObjectProperty<>(this, "actionWithoutParameters", (ev) -> {
+        final EventHandlerProperty incrementAction =
+        new SimpleEventHandlerProperty(this, "actionWithoutParameters", (ev) -> {
             count++;
         });
 
-        final ReadOnlyProperty<EventHandler<ActionEvent>> addAction =
-        new SimpleObjectProperty<>(this, "actionWithEvent", (ev) -> {
+        final EventHandlerProperty addAction =
+        new SimpleEventHandlerProperty(this, "actionWithEvent", (ev) -> {
             count += ((Number) ev.getSource()).intValue();
         });
 
-        final ReadOnlyProperty<EventHandler<ActionDataEvent>> addTwiceAction =
-        new SimpleObjectProperty<>(this, "actionWithData", (ev) -> {
+        final EventHandlerProperty addTwiceAction =
+        new SimpleEventHandlerProperty(this, "actionWithData", (ev) -> {
             count += ev.getSource(Number.class).intValue();
             count += ev.getProperty(Number.class, "any").intValue();
         });
@@ -67,7 +63,7 @@ public class EventHandlerPropertyTest {
             return info;
         }
     }
-    // END: com.dukescript.api.javafx.beans.EventHandlerPropertyTest#actionProperty
+    // END: com.dukescript.api.javafx.beans.EventHandlerPropertyTest#CountingBean
 
     private CountingBean bean;
     private FXBeanInfo info;

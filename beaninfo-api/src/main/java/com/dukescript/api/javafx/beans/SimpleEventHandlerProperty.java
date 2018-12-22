@@ -29,11 +29,60 @@ package com.dukescript.api.javafx.beans;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.EventHandler;
 
-final class SimpleEventHandlerProperty extends
+/**
+ * Simple implementation of a property
+ * representing an {@link FXBeanInfo#getActions() action} in the
+ * {@link FXBeanInfo}.
+ * <p>
+ * It is usually easier to use
+ * {@link FXBeanInfo.Builder#action(java.lang.String, java.lang.Runnable)}
+ * or
+ * {@link FXBeanInfo.Builder#action(java.lang.String, javafx.event.EventHandler)},
+ * but should properties be the preferred way to represent actions,
+ * here is how to use them:
+ * <p>
+ * {@codesnippet com.dukescript.api.javafx.beans.EventHandlerPropertyTest#CountingBean}
+ *
+ * @since 0.4
+ */
+public class SimpleEventHandlerProperty extends
     SimpleObjectProperty<EventHandler<? super ActionDataEvent>>
     implements EventHandlerProperty {
 
-    SimpleEventHandlerProperty(
+    /** Default constructor.
+     * @since 0.4
+     */
+    public SimpleEventHandlerProperty() {
+        super();
+    }
+
+    /** Constructor with handler.
+     *
+     * @param handler provide the handler
+     * @since 0.4
+     */
+    public SimpleEventHandlerProperty(EventHandler<? super ActionDataEvent> handler) {
+        super(handler);
+    }
+
+    /** Constructor with bean and name.
+     *
+     * @param bean the bean
+     * @param name the name of the property
+     */
+    public SimpleEventHandlerProperty(Object bean, String name) {
+        super(bean, name);
+    }
+
+    /** Constructor with all attributes.
+     *
+     * @param bean the bean
+     * @param name name of the property
+     * @param handler handler
+     *
+     * @since 0.4
+     */
+    public SimpleEventHandlerProperty(
         Object bean, String name, EventHandler<? super ActionDataEvent> handler
     ) {
         super(bean, name, handler);

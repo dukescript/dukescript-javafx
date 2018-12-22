@@ -56,7 +56,7 @@ public class BeanInfoCheck {
     private static
     // BEGIN: com.dukescript.javafx.tests.BeanInfoCheck#CountingBean
     class CountingBean implements FXBeanInfo.Provider {
-        int count;
+        private int count;
 
         private void addAction(ActionEvent ev) {
             count += ((Number) ev.getSource()).intValue();

@@ -263,6 +263,21 @@ public final class FXBeanInfo {
             return action(prop);
         }
 
+        /** @deprecated to be removed, use {@link #action(com.dukescript.api.javafx.beans.EventHandlerProperty)}
+         * @deprecated
+         */
+        @Deprecated
+        public Builder action(ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p) {
+            System.err.println("this method will be removed: " + p);
+            EventHandlerProperty ehp;
+            if (p instanceof EventHandlerProperty) {
+                ehp = (EventHandlerProperty) p;
+            } else {
+                ehp = new DelegateEventHandlerProperty(p);
+            }
+            return action(ehp);
+        }
+
         /** Generic way to register an action property.
          * Actions are defined as {@link EventHandlerProperty}
          * instances. This method allows direct registration of such property. However,
@@ -274,18 +289,13 @@ public final class FXBeanInfo {
          * In case manipulation with actual {@link ObjectProperty} is needed, here
          * is an example showing a path through all the generic signatures:
          * <p>
-         * {@codesnippet com.dukescript.api.javafx.beans.EventHandlerPropertyTest#actionProperty}
+         * {@codesnippet com.dukescript.api.javafx.beans.EventHandlerPropertyTest#CountingBean}
          *
          * @param p instance of {@link EventHandlerProperty} to register
          * @return {@code this} builder
+         * @since 0.4
          */
-        public Builder action(ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>> p) {
-            EventHandlerProperty ehp;
-            if (p instanceof EventHandlerProperty) {
-                ehp = (EventHandlerProperty) p;
-            } else {
-                ehp = new DelegateEventHandlerProperty(p);
-            }
+        public Builder action(EventHandlerProperty p) {
             if (this.functions == null) {
                 this.functions = new LinkedHashMap<>();
             }
@@ -293,7 +303,7 @@ public final class FXBeanInfo {
             if (name == null) {
                 throw new NullPointerException("No name for " + p);
             }
-            EventHandlerProperty prev = this.functions.put(name, ehp);
+            EventHandlerProperty prev = this.functions.put(name, p);
             if (prev != null) {
                 this.functions.put(name, prev);
                 throw new IllegalArgumentException("Cannot redefine " + prev + " with " + p);
