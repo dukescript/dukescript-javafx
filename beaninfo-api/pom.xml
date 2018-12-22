@@ -171,6 +171,21 @@
                   <tag>release-${releaseVersion}</tag>
               </configuration>
           </plugin>
+          <plugin>
+              <groupId>org.netbeans.tools</groupId>
+              <artifactId>sigtest-maven-plugin</artifactId>
+              <version>1.1</version>
+              <executions>
+                  <execution>
+                      <goals>
+                          <goal>generate</goal>
+                      </goals>
+                  </execution>
+              </executions>
+              <configuration>
+                  <packages>com.dukescript.api.javafx.beans,com.dukescript.spi.javafx.beans</packages>
+              </configuration>
+          </plugin>
       </plugins>
   </build>
   <dependencies>
