@@ -74,6 +74,7 @@
     </scm>
     
     <modules>
+        <module>javafx-base</module>
         <module>beaninfo-api</module>
         <module>beaninfo-demo</module>
         <module>beaninfo-testing</module>
@@ -111,7 +112,7 @@
                 <executions>
                     <execution>
                         <id>validate-headers</id>
-                        <phase>validate</phase>
+                        <phase>site</phase>
                         <goals>
                             <goal>check-file-header</goal>
                         </goals>

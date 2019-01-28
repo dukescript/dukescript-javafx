@@ -87,10 +87,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.javafxports</groupId>
-            <artifactId>dalvik-sdk</artifactId>
+            <groupId>com.dukescript.api</groupId>
+            <artifactId>javafx.base</artifactId>
             <version>8.60.11</version>
-            <type>zip</type>
         </dependency>
     </dependencies>
     <build>
@@ -102,49 +101,6 @@
                 <configuration>
                     <junitArtifactName>com.dukescript.api:junit-osgi</junitArtifactName>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.9</version>
-                <executions>
-                    <execution>
-                        <id>dalvik-sdk</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <includeArtifactIds>dalvik-sdk</includeArtifactIds>
-                            <includeScope>runtime</includeScope>
-                            <outputDirectory>${project.build.directory}/zips</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>dalvik-sdk</id>
-                        <phase>process-classes</phase>
-                        <configuration>
-                            <tasks>
-                                <unzip src="${basedir}/target/zips/dalvik-sdk/rt/lib/ext/jfxrt.jar" dest="${basedir}/target/classes/">
-                                    <patternset>
-                                        <include name="javafx/beans/**"/>
-                                        <include name="javafx/event/**"/>
-                                    </patternset>
-                                </unzip>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

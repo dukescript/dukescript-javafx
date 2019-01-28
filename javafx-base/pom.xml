@@ -11,10 +11,10 @@
   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
   copies of the Software, and to permit persons to whom the Software is
   furnished to do so, subject to the following conditions:
-  
+
   The above copyright notice and this permission notice shall be included in
   all copies or substantial portions of the Software.
-  
+
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,35 +30,27 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.dukescript.api</groupId>
-  <artifactId>javafx.beaninfo</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>javafx.base</artifactId>
+  <version>8.60.11</version>
   <packaging>bundle</packaging>
   <url>http://dukescript.com</url>
-  <name>JavaFX BeanInfo API</name>
-  <description>JavaFX BeanInfo Extension API.</description>
+  <name>JavaFX Base API</name>
+  <description>Standalone JavaFX Base API for JDK8</description>
 
   <developers>
       <developer>
-          <id>monacotoni</id>
-          <name>Anton Epple</name>
-          <email>toni.epple@dukescript.com</email>
-          <organization>Dukehoff GmbH</organization>
-          <organizationUrl>http://www.dukescript.com</organizationUrl>
-          <roles>
-              <role>Project-Administrator</role>
-              <role>Developer</role>
-          </roles>
-          <timezone>+1</timezone>
+          <id>openjfx</id>
+          <name>OpenJFX Mailing List</name>
+          <email>openjfx-dev@openjdk.java.net</email>
       </developer>
   </developers>
 
   <licenses>
       <license>
-          <name>MIT</name>
-          <url>https://opensource.org/licenses/MIT</url>
-          <comments>
-              The API is free to use with the MIT license.
-          </comments>
+          <name>GPLv2+CE</name>
+          <url>https://openjdk.java.net/legal/gplv2+ce.html</url>
+          <distribution>repo</distribution>
+          <comments>GNU General Public License version 2 with the Classpath Exception</comments>
       </license>
   </licenses>
 
@@ -68,11 +60,14 @@
       <developerConnection>scm:git:https://github.com/dukescript/dukescript-javafx.git</developerConnection>
       <tag>release-${releaseVersion}</tag>
   </scm>
-  
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <net.java.html.version>1.5.1</net.java.html.version>
-    <publicPackages>com.dukescript.api.javafx.beans,com.dukescript.spi.javafx.beans</publicPackages>
+    <publicPackages>javafx.beans,javafx.beans.binding,
+javafx.beans.property,javafx.beans.property.adapter,javafx.beans.value,
+javafx.collections,javafx.collections.transformation,javafx.event,
+javafx.util,javafx.util.converter</publicPackages>
   </properties>
 
   <distributionManagement>
@@ -81,28 +76,8 @@
           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       </snapshotRepository>
   </distributionManagement>
-
-  <repositories>
-      <repository>
-          <id>netbeans</id>
-          <name>NetBeans</name>
-          <url>http://bits.netbeans.org/maven2/</url>
-      </repository>
-  </repositories>
   <build>
       <plugins>
-          <plugin>
-              <groupId>org.apache.felix</groupId>
-              <artifactId>maven-bundle-plugin</artifactId>
-              <version>2.4.0</version>
-              <extensions>true</extensions>
-              <configuration>
-                  <instructions>
-                      <Export-Package>${publicPackages},META-INF.services.*;-noimport:=true;-split-package:=first</Export-Package>
-                      <Bundle-SymbolicName>com.dukescript.javafx.beaninfo</Bundle-SymbolicName>
-                  </instructions>
-              </configuration>
-          </plugin>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-compiler-plugin</artifactId>
@@ -113,41 +88,68 @@
               </configuration>
           </plugin>
           <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <version>3.0.1</version>
+              <groupId>org.apache.felix</groupId>
+              <artifactId>maven-bundle-plugin</artifactId>
+              <version>2.4.0</version>
+              <extensions>true</extensions>
               <configuration>
-                  <subpackages>com.dukescript.api.javafx.beans</subpackages>
-                  <offlineLinks>
-                      <offlineLink>
-                          <url>https://docs.oracle.com/javase/8/javafx/api/</url>
-                          <location>https://docs.oracle.com/javase/8/javafx/api/</location>
-                      </offlineLink>
-                  </offlineLinks>
-                  <doclet>org.apidesign.javadoc.codesnippet.Doclet</doclet>
-                  <docletArtifact>
-                      <groupId>org.apidesign.javadoc</groupId>
-                      <artifactId>codesnippet-doclet</artifactId>
-                      <version>0.30</version>
-                  </docletArtifact>
-                  <additionalOptions>
-                      <additionalparam>-snippetpath src/test/</additionalparam>
-                      <additionalparam>-snippetpath ../beaninfo-embedded/src/main/</additionalparam>
-                      <additionalparam>-snippetpath ../beaninfo-testing/app/src/main/</additionalparam>
-                      <additionalparam>-hiddingannotation java.lang.Deprecated</additionalparam>
-                  </additionalOptions>
+                  <instructions>
+                      <Export-Package>${publicPackages},META-INF.services.*;-noimport:=true;-split-package:=first</Export-Package>
+                      <Bundle-SymbolicName>com.dukescript.javafx.base</Bundle-SymbolicName>
+                  </instructions>
               </configuration>
           </plugin>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>2.19.1</version>
-              <configuration>
-                  <junitArtifactName>com.dukescript.api:junit-osgi</junitArtifactName>
-                  <systemPropertyVariables>
-                      <fxpresenter.headless>true</fxpresenter.headless>
-                  </systemPropertyVariables>
-              </configuration>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <execution>
+                        <id>dalvik-sdk</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>dalvik-sdk</includeArtifactIds>
+                            <includeScope>provided</includeScope>
+                            <outputDirectory>${project.build.directory}/zips</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+          </plugin>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>dalvik-sdk</id>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <tasks>
+                                <unzip src="${basedir}/target/zips/dalvik-sdk/rt/lib/ext/jfxrt.jar" dest="${basedir}/target/classes/">
+                                    <patternset>
+                                        <include name="javafx/beans/**"/>
+                                        <include name="javafx/beans/binding/**"/>
+                                        <include name="javafx/beans/property/**"/>
+                                        <include name="javafx/collections/**"/>
+                                        <include name="javafx/event/**"/>
+                                        <include name="javafx/util/**"/>
+                                        <include name="javafx/util/converter/**"/>
+                                        <include name="com/sun/javafx/binding/**"/>
+                                        <include name="com/sun/javafx/collections/**"/>
+                                        <include name="com/sun/javafx/event/**"/>
+                                        <include name="com/sun/javafx/property/**"/>
+                                    </patternset>
+                                </unzip>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
           </plugin>
           <plugin>
               <groupId>org.sonatype.plugins</groupId>
@@ -179,68 +181,26 @@
               <executions>
                   <execution>
                       <goals>
-                          <goal>generate</goal>
+                            <goal>check</goal>
                       </goals>
                   </execution>
               </executions>
               <configuration>
-                  <packages>com.dukescript.api.javafx.beans,com.dukescript.spi.javafx.beans</packages>
+                    <packages>${publicPackages}</packages>
+                    <sigfile>src/main/javafx-base-11.sigfile</sigfile>
+                    <action>check</action>
               </configuration>
           </plugin>
       </plugins>
   </build>
   <dependencies>
-    <dependency>
-        <groupId>org.netbeans.html</groupId>
-        <artifactId>net.java.html.json</artifactId>
-        <version>${net.java.html.version}</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.netbeans.html</groupId>
-        <artifactId>net.java.html.boot</artifactId>
-        <version>${net.java.html.version}</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.netbeans.html</groupId>
-        <artifactId>ko4j</artifactId>
-        <version>${net.java.html.version}</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.netbeans.html</groupId>
-        <artifactId>net.java.html.boot.fx</artifactId>
-        <version>${net.java.html.version}</version>
-        <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-        <groupId>org.netbeans.api</groupId>
-        <artifactId>org-openide-util-lookup</artifactId>
-        <version>RELEASE82</version>
-        <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-base</artifactId>
-        <version>11</version>
-        <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-        <groupId>com.dukescript.api</groupId>
-        <artifactId>junit-osgi</artifactId>
-        <scope>test</scope>
-        <version>4.12</version>
-    </dependency>
-    <dependency>
-        <groupId>com.dukescript.api</groupId>
-        <artifactId>junit-browser-runner</artifactId>
-        <scope>test</scope>
-        <version>1.0</version>
-    </dependency>
+      <dependency>
+          <groupId>org.javafxports</groupId>
+          <artifactId>dalvik-sdk</artifactId>
+          <version>8.60.11</version>
+          <type>zip</type>
+          <scope>provided</scope>
+      </dependency>
   </dependencies>
   <profiles>
       <profile>
