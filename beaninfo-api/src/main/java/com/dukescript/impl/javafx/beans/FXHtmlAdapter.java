@@ -49,7 +49,7 @@ final class FXHtmlAdapter implements ChangeListener<Object> {
     FXHtmlAdapter(FXBeanInfo info) {
         this.properties = info.getProperties();
         this.props = new ArrayList<>(this.properties.values());
-        this.funcs = new ArrayList<>(info.getActions().values());
+        this.funcs = new ArrayList<ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>>(info.getActions().values());
         this.listener = new WeakChangeListener<>(this);
         for (ObservableValue<?> ov : this.properties.values()) {
             ov.addListener(listener);

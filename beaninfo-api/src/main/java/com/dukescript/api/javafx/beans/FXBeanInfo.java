@@ -65,8 +65,8 @@ public final class FXBeanInfo {
         Map<String, EventHandlerProperty> functions
     ) {
         this.bean = bean;
-        this.properties = properties == null ? Collections.emptyMap() : Collections.unmodifiableMap(properties);
-        this.functions = functions == null ? Collections.emptyMap() : Collections.unmodifiableMap(functions);
+        this.properties = properties == null ? Collections.<String, ObservableValue<?>>emptyMap() : Collections.unmodifiableMap(properties);
+        this.functions = functions == null ? Collections.<String, EventHandlerProperty>emptyMap() : Collections.unmodifiableMap(functions);
         List<Object> data = new ArrayList<>();
         if (bean!=null){
             for (FXBeanInfoProvider<?> p : ServiceLoader.load(FXBeanInfoProvider.class)) {
@@ -239,9 +239,12 @@ public final class FXBeanInfo {
          * @since 0.4
          * @return {@code this} builder
          */
-        public Builder action(String name, Runnable handler) {
-            SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, (ActionDataEvent t) -> {
-                handler.run();
+        public Builder action(String name, final Runnable handler) {
+            SimpleEventHandlerProperty prop = new SimpleEventHandlerProperty(bean, name, new EventHandler<ActionDataEvent>() {
+                @Override
+                public void handle(ActionDataEvent t) {
+                    handler.run();
+                }
             });
             return action(prop);
         }
