@@ -12,10 +12,10 @@ package com.dukescript.api.javafx.beans;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
@@ -88,7 +89,10 @@ public final class FXBeanInfo {
         return bean;
     }
 
-    /** Properties of {@linkplain #getBean() this bean}.
+    /** Properties of {@linkplain #getBean() this bean}. Properties can
+     * depend on each other via so called {@link Bindings}:
+     *
+     * {@codesnippet com.dukescript.api.javafx.beans.BindingsTest#multiplyBean}
      *
      * @return immutable map of available properties
      */
@@ -229,7 +233,7 @@ public final class FXBeanInfo {
         }
 
         /** Registers parameter-less action. Works well with method
-         * references to parameter-less methods. Following example defines 
+         * references to parameter-less methods. Following example defines
          * one such action:
          * <p>
          * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
@@ -251,7 +255,7 @@ public final class FXBeanInfo {
 
         /** Registers action with event parameter. Works well with
          * references to methods that accept {@link ActionEvent} or
-         * {@link ActionDataEvent} parameter. Following example defines 
+         * {@link ActionDataEvent} parameter. Following example defines
          * such actions:
          * <p>
          * {@codesnippet com.dukescript.javafx.tests.BeanInfoCheck#CountingBean}
