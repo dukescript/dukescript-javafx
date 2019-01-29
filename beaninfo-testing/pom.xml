@@ -42,7 +42,7 @@
     <properties>
         <junit.browser.version>1.0</junit.browser.version>
         <bck2brwsr.version>0.30</bck2brwsr.version>
-        <net.java.html.version>1.5.1</net.java.html.version>
+        <net.java.html.version>1.6</net.java.html.version>
         <presenters.version>1.5.2</presenters.version>
         <moe.version>1.4.1</moe.version>
         <robovm.version>2.3.2</robovm.version>

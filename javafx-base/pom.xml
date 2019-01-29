@@ -63,7 +63,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <net.java.html.version>1.5.1</net.java.html.version>
     <publicPackages>javafx.beans,javafx.beans.binding,
 javafx.beans.property,javafx.beans.property.adapter,javafx.beans.value,
 javafx.collections,javafx.collections.transformation,javafx.event,

@@ -38,7 +38,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>com.dukescript.javafx.fxbeaninfo.Main</mainClass>
-        <net.java.html.version>1.5.1</net.java.html.version>
+        <net.java.html.version>1.6</net.java.html.version>
     </properties>
 
     <organization>

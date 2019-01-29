@@ -43,7 +43,6 @@
 
     <properties>
         <platform.version>4.1.1.4</platform.version>
-        <presenters.version>1.5.1</presenters.version>
         <android.plugin.version>4.5.0</android.plugin.version>
         <retrolamda.version>2.5.5</retrolamda.version>
         <android.platform.version>19</android.platform.version>
