@@ -27,6 +27,7 @@ package com.dukescript.impl.javafx.beans;
  */
 
 import com.dukescript.api.javafx.beans.ActionDataEvent;
+import com.dukescript.api.javafx.beans.EventHandlerProperty;
 import com.dukescript.api.javafx.beans.FXBeanInfo;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,18 +44,18 @@ final class FXHtmlAdapter implements ChangeListener<Object> {
     private final WeakChangeListener listener;
     private final Map<String, ObservableValue<?>> properties;
     final List<ObservableValue<?>> props;
-    final List<ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>> funcs;
+    final List<EventHandlerProperty> funcs;
     final Proto proto;
 
     FXHtmlAdapter(FXBeanInfo info) {
         this.properties = info.getProperties();
-        this.props = new ArrayList<>(this.properties.values());
-        this.funcs = new ArrayList<ReadOnlyProperty<? extends EventHandler<? super ActionDataEvent>>>(info.getActions().values());
+        this.props = new ArrayList<>();
+        this.funcs = new ArrayList<>();
         this.listener = new WeakChangeListener<>(this);
         for (ObservableValue<?> ov : this.properties.values()) {
             ov.addListener(listener);
         }
-        this.proto = FXHtml4Java.findProto(info);
+        this.proto = FXHtml4Java.findProto(info, this.props, this.funcs);
     }
 
     @Override

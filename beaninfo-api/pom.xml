@@ -71,7 +71,7 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <net.java.html.version>1.5.1</net.java.html.version>
+    <net.java.html.version>1.6</net.java.html.version>
     <publicPackages>com.dukescript.api.javafx.beans,com.dukescript.spi.javafx.beans</publicPackages>
   </properties>
 
@@ -242,6 +242,12 @@
         <artifactId>junit-browser-runner</artifactId>
         <scope>test</scope>
         <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.19</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <profiles>

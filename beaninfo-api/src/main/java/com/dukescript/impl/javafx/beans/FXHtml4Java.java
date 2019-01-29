@@ -29,7 +29,11 @@ package com.dukescript.impl.javafx.beans;
 import com.dukescript.api.javafx.beans.ActionDataEvent;
 import com.dukescript.api.javafx.beans.EventHandlerProperty;
 import com.dukescript.api.javafx.beans.FXBeanInfo;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ObservableValue;
@@ -39,39 +43,55 @@ import net.java.html.BrwsrCtx;
 import org.netbeans.html.json.spi.Proto;
 
 final class FXHtml4Java extends Proto.Type<FXBeanInfo.Provider> implements ActionDataEventFactory.Convertor {
-    private static final ClassValue<FXHtml4Java[]> TYPES = new ClassValue<FXHtml4Java[]>() {
-        @Override
-        protected FXHtml4Java[] computeValue(Class<?> type) {
-            return new FXHtml4Java[1];
-        }
-    };
+    private static final Map<Class,FXHtml4Java> TYPES = new HashMap<>();
 
-    static Proto findProto(FXBeanInfo info) {
+    synchronized static Proto findProto(FXBeanInfo info, List<ObservableValue<?>> fillValues, List<EventHandlerProperty> fillFunctions) {
         Class<?> clazz = info.getBean().getClass();
-        FXHtml4Java[] data = TYPES.get(clazz);
-        if (data[0] == null) {
+        FXHtml4Java data = TYPES.get(clazz);
+        if (data == null) {
             Class<? extends FXBeanInfo.Provider> pClass = clazz.asSubclass(FXBeanInfo.Provider.class);
-            data[0] = new FXHtml4Java(pClass, info);
+            data = new FXHtml4Java(pClass, info.getProperties().size(), info.getActions().size());
+            TYPES.put(clazz, data);
         }
+        data.registerProperties(info, fillValues);
+        data.registerFunctions(info, fillFunctions);
         BrwsrCtx ctx = BrwsrCtx.findDefault(clazz);
-        return data[0].createProto(info.getBean(), ctx);
+        return data.createProto(info.getBean(), ctx);
     }
 
-    FXHtml4Java(Class<? extends FXBeanInfo.Provider> clazz, FXBeanInfo info) {
-        super(clazz, clazz, info.getProperties().size(), info.getActions().size());
+    private final Set<String> propertyNames = new LinkedHashSet<>();
+    private final Set<String> functionNames = new LinkedHashSet<>();
 
-        int index = 0;
-        for (Map.Entry<String, ObservableValue<?>> e : info.getProperties().entrySet()) {
-            String name = e.getKey();
-            ObservableValue<?> p = e.getValue();
-            boolean readOnly = !(p instanceof WritableValue);
-            boolean constant = p instanceof ConstantValue;
-            registerProperty(name, index++, readOnly, constant);
-        }
-        index = 0;
+    FXHtml4Java(Class<? extends FXBeanInfo.Provider> clazz, int initialProps, int initialActions) {
+        super(clazz, clazz, initialProps, initialActions);
+    }
+
+    private void registerFunctions(FXBeanInfo info, List<EventHandlerProperty> fill) {
         for (Map.Entry<String, EventHandlerProperty> e : info.getActions().entrySet()) {
             String name = e.getKey();
-            registerFunction(name, index++);
+            int currentSize = functionNames.size();
+            if (functionNames.add(name)) {
+                registerFunction(name, currentSize);
+            }
+        }
+        for (String fn : functionNames) {
+            fill.add(info.getActions().get(fn));
+        }
+    }
+
+    private void registerProperties(FXBeanInfo info, List<ObservableValue<?>> fill) {
+        for (Map.Entry<String, ObservableValue<?>> e : info.getProperties().entrySet()) {
+            String name = e.getKey();
+            int currentSize = propertyNames.size();
+            if (propertyNames.add(name)) {
+                ObservableValue<?> p = e.getValue();
+                boolean readOnly = !(p instanceof WritableValue);
+                boolean constant = p instanceof ConstantValue;
+                registerProperty(name, currentSize, readOnly, constant);
+            }
+        }
+        for (String pn : propertyNames) {
+            fill.add(info.getProperties().get(pn));
         }
     }
 
