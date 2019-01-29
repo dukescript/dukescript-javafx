@@ -225,13 +225,6 @@
     </dependency>
 
     <dependency>
-        <groupId>org.openjfx</groupId>
-        <artifactId>javafx-base</artifactId>
-        <version>11</version>
-        <scope>provided</scope>
-    </dependency>
-
-    <dependency>
         <groupId>com.dukescript.api</groupId>
         <artifactId>junit-osgi</artifactId>
         <scope>test</scope>
@@ -248,6 +241,11 @@
       <artifactId>mockito-all</artifactId>
       <version>1.10.19</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>javafx.base</artifactId>
+      <version>8.60.11</version>
     </dependency>
   </dependencies>
   <profiles>

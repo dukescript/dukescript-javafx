@@ -140,9 +140,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-base</artifactId>
-            <version>11</version>
+            <groupId>com.dukescript.api</groupId>
+            <artifactId>javafx.base</artifactId>
+            <version>8.60.11</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
