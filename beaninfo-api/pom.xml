@@ -71,7 +71,7 @@
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <net.java.html.version>1.6</net.java.html.version>
+    <net.java.html.version>1.7</net.java.html.version>
     <publicPackages>com.dukescript.api.javafx.beans,com.dukescript.spi.javafx.beans</publicPackages>
   </properties>
 
