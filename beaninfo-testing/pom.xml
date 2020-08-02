@@ -35,8 +35,6 @@
     <modules>
         <module>app</module>
         <module>browser</module>
-        <module>moetest</module>
-        <module>robovmtest</module>
     </modules>
 
     <properties>
@@ -118,6 +116,18 @@
             <id>android</id>
             <modules>
                 <module>android</module>
+            </modules>
+        </profile>
+        <profile>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <id>mac</id>
+            <modules>
+                <module>moetest</module>
+                <module>robovmtest</module>
             </modules>
         </profile>
     </profiles>
