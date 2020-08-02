@@ -37,6 +37,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <skipRobotTests>false</skipRobotTests>
     </properties>
 
     <url>http://dukescript.com</url>
@@ -129,6 +130,7 @@
                     <additionalClasspathElements>
                         <additionalClasspathElement>${java.home}/lib/jfxrt.jar</additionalClasspathElement>
                     </additionalClasspathElements>
+                    <skipTests>${skipRobotTests}</skipTests>
                 </configuration>
             </plugin>
             <plugin>
