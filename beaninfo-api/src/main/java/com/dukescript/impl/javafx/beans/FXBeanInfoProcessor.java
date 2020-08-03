@@ -31,7 +31,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -99,9 +102,21 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
                 w.append("      if (info == null) {\n");
                 w.append("        ").append(clazzName).append(" obj = (").append(clazzName).append(") this;\n");
                 w.append("        com.dukescript.api.javafx.beans.FXBeanInfo.Builder b = com.dukescript.api.javafx.beans.FXBeanInfo.newBuilder(obj);\n");
-                Map<String,Element> props = new HashMap<>();
+                Map<String,List<Element>> props = new HashMap<>();
                 registerProperties(w, "        ", clazz, props, ok);
                 registerMethods(w, "        ", clazz, props, ok);
+
+                for (Map.Entry<String, List<Element>> entry : props.entrySet()) {
+                    String propertyName = entry.getKey();
+                    List<Element> arr = entry.getValue();
+
+                    if (arr.size() > 1) {
+                        for (Element defined : arr) {
+                            emitErrorOn(defined, propertyName + " is defined multiple times", ok);
+                        }
+                    }
+                }
+
                 w.append("        this.info = b.build();\n");
                 w.append("      }\n");
                 w.append("      return info;\n");
@@ -156,7 +171,7 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
         ok[0] = false;
     }
 
-    private void registerProperties(Writer w, String prefix, TypeElement clazz, Map<String, Element> props, boolean[] ok) throws IOException {
+    private void registerProperties(Writer w, String prefix, TypeElement clazz, Map<String, List<Element>> props, boolean[] ok) throws IOException {
         final Elements eu = processingEnv.getElementUtils();
         final Types tu = processingEnv.getTypeUtils();
         final String valueName = "javafx.beans.value.ObservableValue";
@@ -179,11 +194,21 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
             } else {
                 w.append(prefix).append("b.property(\"").append(propName).append("\", obj.").append(propName).append(");\n");
             }
-            props.put(propName, e);
+            appendElement(props, propName, e);
         }
     }
 
-    private void registerMethods(Writer w, String prefix, TypeElement clazz, Map<String, Element> props, boolean[] ok) throws IOException {
+    private static boolean appendElement(Map<String, List<Element>> props, final String propName, Element e) {
+        List<Element> arr = props.get(propName);
+        if (arr == null) {
+            arr = new ArrayList<>();
+            props.put(propName, arr);
+        }
+        arr.add(e);
+        return arr.size() == 1;
+    }
+
+    private void registerMethods(Writer w, String prefix, TypeElement clazz, Map<String, List<Element>> props, boolean[] ok) throws IOException {
         final Elements eu = processingEnv.getElementUtils();
         final Types tu = processingEnv.getTypeUtils();
         final String actionEvent = "javafx.event.ActionEvent";
@@ -216,8 +241,11 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
             }
 
             final String propName = e.getSimpleName().toString();
-            w.append(prefix).append("b.action(\"").append(propName).append("\", obj::").append(propName).append(");\n");
-            props.put(propName, e);
+            w.append(prefix);
+            if (!appendElement(props, propName, e)) {
+                w.append("// ");
+            }
+            w.append("b.action(\"").append(propName).append("\", obj::").append(propName).append(");\n");
         }
     }
 

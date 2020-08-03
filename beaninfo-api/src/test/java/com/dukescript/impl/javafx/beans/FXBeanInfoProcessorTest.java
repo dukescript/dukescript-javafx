@@ -26,7 +26,11 @@ package com.dukescript.impl.javafx.beans;
  * #L%
  */
 
+import com.dukescript.api.javafx.beans.ActionDataEvent;
 import com.dukescript.api.javafx.beans.FXBeanInfo;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 
 public class FXBeanInfoProcessorTest {
     public FXBeanInfoProcessorTest() {
@@ -54,5 +58,23 @@ public class FXBeanInfoProcessorTest {
 
     @FXBeanInfo.Introspect
     public static class Generic extends GenericBeanInfo {
+    }
+
+    @FXBeanInfo.Introspect
+    static class OverloadedProperties extends OverloadedPropertiesBeanInfo {
+        @FXBeanInfoProcessor.ExpectError("text is defined multiple times")
+        final StringProperty text = new SimpleStringProperty();
+
+        @FXBeanInfoProcessor.ExpectError("text is defined multiple times")
+        final void text() {
+        }
+
+        @FXBeanInfoProcessor.ExpectError("text is defined multiple times")
+        final void text(ActionEvent ev) {
+        }
+
+        @FXBeanInfoProcessor.ExpectError("text is defined multiple times")
+        final void text(ActionDataEvent ev) {
+        }
     }
 }
