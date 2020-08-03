@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Processor;
@@ -39,7 +41,9 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -95,7 +99,9 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
                 w.append("      if (info == null) {\n");
                 w.append("        ").append(clazzName).append(" obj = (").append(clazzName).append(") this;\n");
                 w.append("        com.dukescript.api.javafx.beans.FXBeanInfo.Builder b = com.dukescript.api.javafx.beans.FXBeanInfo.newBuilder(obj);\n");
-                registerProperties(w, "        ", clazz, ok);
+                Map<String,Element> props = new HashMap<>();
+                registerProperties(w, "        ", clazz, props, ok);
+                registerMethods(w, "        ", clazz, props, ok);
                 w.append("        this.info = b.build();\n");
                 w.append("      }\n");
                 w.append("      return info;\n");
@@ -150,7 +156,7 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
         ok[0] = false;
     }
 
-    private void registerProperties(Writer w, String prefix, TypeElement clazz, boolean[] ok) throws IOException {
+    private void registerProperties(Writer w, String prefix, TypeElement clazz, Map<String, Element> props, boolean[] ok) throws IOException {
         final Elements eu = processingEnv.getElementUtils();
         final Types tu = processingEnv.getTypeUtils();
         final String valueName = "javafx.beans.value.ObservableValue";
@@ -167,11 +173,51 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
                 continue;
             }
             final TypeMirror rawType = tu.erasure(e.asType());
+            final String propName = e.getSimpleName().toString();
             if (!tu.isAssignable(rawType, superType)) {
-                w.append(prefix).append("b.constant(\"").append(e.getSimpleName()).append("\", obj.").append(e.getSimpleName()).append(");\n");
+                w.append(prefix).append("b.constant(\"").append(propName).append("\", obj.").append(propName).append(");\n");
             } else {
-                w.append(prefix).append("b.property(\"").append(e.getSimpleName()).append("\", obj.").append(e.getSimpleName()).append(");\n");
+                w.append(prefix).append("b.property(\"").append(propName).append("\", obj.").append(propName).append(");\n");
             }
+            props.put(propName, e);
+        }
+    }
+
+    private void registerMethods(Writer w, String prefix, TypeElement clazz, Map<String, Element> props, boolean[] ok) throws IOException {
+        final Elements eu = processingEnv.getElementUtils();
+        final Types tu = processingEnv.getTypeUtils();
+        final String actionEvent = "javafx.event.ActionEvent";
+        final TypeElement elementActionEvent = eu.getTypeElement(actionEvent);
+        if (elementActionEvent == null) {
+            emitErrorOn(clazz, "Cannot find " + actionEvent, ok);
+        }
+        TypeMirror typeActionEvent = tu.erasure(elementActionEvent.asType());
+        for (Element e :clazz.getEnclosedElements()) {
+            if (e.getKind() != ElementKind.METHOD) {
+                continue;
+            }
+            if (e.getModifiers().contains(Modifier.PRIVATE)) {
+                continue;
+            }
+            if (e.getModifiers().contains(Modifier.STATIC)) {
+                continue;
+            }
+
+            ExecutableElement ee = (ExecutableElement) e;
+            switch (ee.getParameters().size()) {
+                case 0:
+                    break;
+                case 1:
+                    if (tu.isAssignable(ee.getParameters().get(0).asType(), typeActionEvent)) {
+                        break;
+                    }
+                default:
+                    continue;
+            }
+
+            final String propName = e.getSimpleName().toString();
+            w.append(prefix).append("b.action(\"").append(propName).append("\", obj::").append(propName).append(");\n");
+            props.put(propName, e);
         }
     }
 

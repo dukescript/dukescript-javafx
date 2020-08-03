@@ -47,9 +47,29 @@ public class IntrospectedBeanTest {
         final EventHandlerProperty callback = new SimpleEventHandlerProperty(this::callback);
 
         private int counter;
+        private ActionEvent ev;
 
         private void callback(ActionEvent ev) {
             counter++;
+            this.ev = ev;
+        }
+
+        void noArgCallback() {
+            counter++;
+            this.ev = null;
+        }
+
+        void actionCallback(ActionEvent ev) {
+            counter++;
+            this.ev = ev;
+        }
+
+        void actionDataCallback(ActionDataEvent ev) {
+            counter += ev.getProperty(Number.class, null).intValue();
+            this.ev = ev;
+        }
+
+        static void ignore() {
         }
     }
 
@@ -71,9 +91,33 @@ public class IntrospectedBeanTest {
         EventHandlerProperty callback = info.getActions().get("callback");
         assertNotNull("Callback is an action", callback);
 
-        assertEquals("No counter", 0, bean.counter);
-        callback.getValue().handle(null);
-        assertEquals("Incremented counter", 1, bean.counter);
+        ActionDataEvent ev = new ActionDataEvent(bean, this, 5);
 
+        assertEquals("No counter", 0, bean.counter);
+        callback.getValue().handle(ev);
+        assertEquals("Incremented counter", 1, bean.counter);
+        assertEquals("The right event", bean.ev, ev);
+
+        EventHandlerProperty noArgCallback;
+        assertNotNull(noArgCallback = info.getActions().get("noArgCallback"));
+        EventHandlerProperty actionCallback;
+        assertNotNull(actionCallback = info.getActions().get("actionCallback"));
+        EventHandlerProperty actionDataCallback;
+        assertNotNull(actionDataCallback = info.getActions().get("actionDataCallback"));
+
+        bean.counter = 0;
+        noArgCallback.getValue().handle(ev);
+        assertEquals("One", 1, bean.counter);
+        assertNull("No event", bean.ev);
+
+        bean.counter = 0;
+        actionCallback.getValue().handle(ev);
+        assertEquals("One", 1, bean.counter);
+        assertEquals("The event", bean.ev, ev);
+
+        bean.counter = 0;
+        actionDataCallback.getValue().handle(ev);
+        assertEquals("Plus five", 5, bean.counter);
+        assertEquals("The event", bean.ev, ev);
     }
 }

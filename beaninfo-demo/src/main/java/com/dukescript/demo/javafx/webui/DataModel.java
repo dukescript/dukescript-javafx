@@ -26,6 +26,7 @@ package com.dukescript.demo.javafx.webui;
  * #L%
  */
 
+import com.dukescript.api.javafx.beans.ActionDataEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -39,7 +40,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import com.dukescript.api.javafx.beans.FXBeanInfo;
-import com.dukescript.api.javafx.beans.SimpleEventHandlerProperty;
+import javafx.event.ActionEvent;
 import net.java.html.json.Models;
 
 @FXBeanInfo.Introspect
@@ -50,36 +51,42 @@ final class DataModel extends DataModelBeanInfo {
     }, message);
     final ListProperty<HistoryElement> history = new SimpleListProperty<>(this, "history", FXCollections.observableArrayList());
     final BooleanProperty rotating = new SimpleBooleanProperty(this, "rotating");
-    final SimpleEventHandlerProperty turnAnimationOn = new SimpleEventHandlerProperty(this, "turnAnimationOn");
-    final SimpleEventHandlerProperty turnAnimationOff = new SimpleEventHandlerProperty(this, "turnAnimationOff");
-    final SimpleEventHandlerProperty rotate5s = new SimpleEventHandlerProperty(this, "rotate5s");
-    final SimpleEventHandlerProperty showScreenSize = new SimpleEventHandlerProperty(this, "showScreenSize");
-    final SimpleEventHandlerProperty removeFromHistory = new SimpleEventHandlerProperty(this, "removeFromHistory");
 
     public DataModel() {
         message.addListener((observable, oldValue, newValue) -> {
             history.add(new HistoryElement(newValue));
         });
-        turnAnimationOn.setValue((event) -> rotating.set(true));
-        turnAnimationOff.setValue((event) -> rotating.set(false));
-        rotate5s.setValue((event) -> {
-            rotating.set(true);
-            java.util.Timer timer = new java.util.Timer("Rotates a while");
-            timer.schedule(new java.util.TimerTask() {
-                @Override
-                public void run() {
-                    rotating.set(false);
-                }
-            }, 5000);
-        });
-        showScreenSize.setValue((event) -> message.set("Screen size is unknown"));
-        removeFromHistory.setValue((event) -> {
-            HistoryElement h = event.getSource(HistoryElement.class);
-            history.remove(h);
-            if (Objects.equals(h.message, message.get())) {
-                message.set("Message has been removed from history");
+    }
+
+    final void turnAnimationOn() {
+        rotating.set(true);
+    }
+
+    final void turnAnimationOff() {
+        rotating.set(false);
+    }
+
+    final void rotate5s() {
+        rotating.set(true);
+        java.util.Timer timer = new java.util.Timer("Rotates a while");
+        timer.schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                rotating.set(false);
             }
-        });
+        }, 5000);
+    }
+
+    final void showScreenSize(ActionEvent ev) {
+        message.set("Screen size is unknown");
+    }
+
+    final void removeFromHistory(ActionDataEvent event) {
+        HistoryElement h = event.getSource(HistoryElement.class);
+        history.remove(h);
+        if (Objects.equals(h.message, message.get())) {
+            message.set("Message has been removed from history");
+        }
     }
 
     static List<String> words(String message) {
