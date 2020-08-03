@@ -12,10 +12,10 @@ package com.dukescript.demo.javafx.webui;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,42 +33,28 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import com.dukescript.api.javafx.beans.ActionDataEvent;
 import com.dukescript.api.javafx.beans.FXBeanInfo;
+import com.dukescript.api.javafx.beans.SimpleEventHandlerProperty;
 import net.java.html.json.Models;
 
-final class DataModel implements FXBeanInfo.Provider {
+@FXBeanInfo.Introspect
+final class DataModel extends DataModelBeanInfo {
     final ObjectProperty<String> message = new SimpleObjectProperty<>(this, "message");
     final ObservableValue<List<String>> words = Bindings.createObjectBinding(() -> {
         return words(message.get());
     }, message);
     final ListProperty<HistoryElement> history = new SimpleListProperty<>(this, "history", FXCollections.observableArrayList());
     final BooleanProperty rotating = new SimpleBooleanProperty(this, "rotating");
-    final Property<EventHandler<Event>> turnAnimationOn = new SimpleObjectProperty<>(this, "turnAnimationOn");
-    final Property<EventHandler<ActionEvent>> turnAnimationOff = new SimpleObjectProperty<>(this, "turnAnimationOff");
-    final Property<EventHandler<ActionEvent>> rotate5s = new SimpleObjectProperty<>(this, "rotate5s");
-    final Property<EventHandler<ActionEvent>> showScreenSize = new SimpleObjectProperty<>(this, "showScreenSize");
-    final Property<EventHandler<ActionDataEvent>> removeFromHistory = new SimpleObjectProperty<>(this, "removeFromHistory");
-    final FXBeanInfo info = FXBeanInfo.newBuilder(this).
-            property(message).
-            property(rotating).
-            property("words", words).
-            property(history).
-            action(turnAnimationOn).
-            action(turnAnimationOff).
-            action(rotate5s).
-            action(showScreenSize).
-            action(removeFromHistory).
-            build();
+    final SimpleEventHandlerProperty turnAnimationOn = new SimpleEventHandlerProperty(this, "turnAnimationOn");
+    final SimpleEventHandlerProperty turnAnimationOff = new SimpleEventHandlerProperty(this, "turnAnimationOff");
+    final SimpleEventHandlerProperty rotate5s = new SimpleEventHandlerProperty(this, "rotate5s");
+    final SimpleEventHandlerProperty showScreenSize = new SimpleEventHandlerProperty(this, "showScreenSize");
+    final SimpleEventHandlerProperty removeFromHistory = new SimpleEventHandlerProperty(this, "removeFromHistory");
 
     public DataModel() {
         message.addListener((observable, oldValue, newValue) -> {
@@ -96,11 +82,6 @@ final class DataModel implements FXBeanInfo.Provider {
         });
     }
 
-    @Override
-    public FXBeanInfo getFXBeanInfo() {
-        return info;
-    }
-
     static List<String> words(String message) {
         String[] arr = new String[6];
         String[] words = message == null ? new String[0] : message.split(" ", 6);
@@ -119,20 +100,12 @@ final class DataModel implements FXBeanInfo.Provider {
         Models.applyBindings(ui);
     }
 
-    private static final class HistoryElement implements FXBeanInfo.Provider {
+    @FXBeanInfo.Introspect
+    static final class HistoryElement extends HistoryElementBeanInfo {
         final String message;
-        final FXBeanInfo info;
 
         HistoryElement(String message) {
             this.message = message;
-            this.info = FXBeanInfo.newBuilder(this).
-                constant("message", message).
-                build();
-        }
-
-        @Override
-        public FXBeanInfo getFXBeanInfo() {
-            return info;
         }
     }
 }

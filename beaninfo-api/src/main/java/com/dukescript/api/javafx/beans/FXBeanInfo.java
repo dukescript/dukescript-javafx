@@ -28,6 +28,10 @@ package com.dukescript.api.javafx.beans;
 
 import com.dukescript.impl.javafx.beans.ConstantValue;
 import com.dukescript.spi.javafx.beans.FXBeanInfoProvider;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -160,6 +164,11 @@ public final class FXBeanInfo {
         FXBeanInfo getFXBeanInfo();
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    @Target(ElementType.TYPE)
+    public static @interface Introspect {
+    }
+
     /**
      * Start creating new {@link FXBeanInfo} for provided {@code bean}.
      * Use {@link Builder} methods like {@link Builder#property(javafx.beans.property.ReadOnlyProperty)}
@@ -213,7 +222,10 @@ public final class FXBeanInfo {
          * @return {@code this} builder
          */
         public Builder property(String name, ObservableValue<?> p) {
-            Objects.requireNonNull(p, "Property must have a name: " + p);
+            Objects.requireNonNull(name, "Property must have a name: " + p);
+            if (p instanceof EventHandlerProperty) {
+                return action(name, (EventHandlerProperty) p);
+            }
             if (this.properties == null) {
                 this.properties = new LinkedHashMap<>();
             }
@@ -303,10 +315,13 @@ public final class FXBeanInfo {
          * @since 0.4
          */
         public Builder action(EventHandlerProperty p) {
+            return action(p.getName(), p);
+        }
+
+        private Builder action(String name, EventHandlerProperty p) {
             if (this.functions == null) {
                 this.functions = new LinkedHashMap<>();
             }
-            final String name = p.getName();
             if (name == null) {
                 throw new NullPointerException("No name for " + p);
             }
