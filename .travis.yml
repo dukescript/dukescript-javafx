@@ -1,24 +1,31 @@
 language: java
-jdk:
-  - oraclejdk8
-  - openjdk11
-sudo: required
 before_install:
   - sudo apt-get -qq update || echo no sudo apt-get
   - sudo apt-get install -y libwebkitgtk-3.0-0 || echo no sudo apt-get
-before_script:
+  - if [ -n "$URL" ]; then pushd /tmp; curl $URL -o jdk.tgz; tar fxz jdk.tgz; JAVA_HOME=`pwd`/$DIR; popd; export JAVA_HOME; fi
+  - echo Java is $JAVA_HOME
+  - ls -l $JAVA_HOME
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start || echo No X11
   - sleep 3
 script:
   - mvn install -DskipTests
-  - mvn -f $TEST_SUITE verify
-os:
-  - linux
-  - osx
-env:
-  - TEST_SUITE=.
+  - mvn verify
 matrix:
-  exclude:
-    - jdk: oraclejdk8
-      os: osx
+  include:
+    - os: linux
+      name: Linux JDK8
+      dist: trusty
+      jdk: openjdk8
+      env:
+        - ARGS=-Dnone
+        - DIR=zulu8.40.0.25-ca-fx-jdk8.0.222-linux_x64
+        - URL=https://cdn.azul.com/zulu/bin/$DIR.tar.gz
+    - os: linux
+      name: Linux JDK11
+      dist: trusty
+      jdk: openjdk11
+      env:
+        - ARGS=-Dnone
+        - DIR=zulu11.39.15-ca-jdk11.0.7-linux_x64
+        - URL=https://cdn.azul.com/zulu/bin/$DIR.tar.gz
