@@ -149,7 +149,8 @@ public final class FXBeanInfo {
         return null;
     }
 
-    /** *  Single method interface for JavaFX beans that can provide {@link FXBeanInfo}.
+    /**
+     * Single method interface for JavaFX beans that can provide {@link FXBeanInfo}.
      * Use {@link #newBuilder(java.lang.Object)} and {@link Builder#build()} to
      * create an instance of your info in your bean constructor and assign
      * it to a {@code final} field. Then return it from the {@link #getFXBeanInfo()}
@@ -164,9 +165,53 @@ public final class FXBeanInfo {
         FXBeanInfo getFXBeanInfo();
     }
 
+    /**
+     * Generate {@link Provider} and its {@link FXBeanInfo} rather than
+     * {@linkplain Builder constructing it manually}. Classical way of
+     * creating {@link FXBeanInfo} is to use the {@link Builder} and
+     * manually specify each {@link Builder#property property}
+     * and {@link Builder#action action} attributes.
+     *
+     * <h5>Generating {@link FXBeanInfo}</h5>
+     *
+     * Sometimes that is a tedious work that can be automated
+     * by using the {@link Generate} annotation. Annotate your bean class
+     * with this annotation and make it extend non-existing(<b>!</b>) super
+     * class. That class is going to be automatically generated during compilation.
+     * It will implement {@link Provider} and return a {@link FXBeanInfo}
+     * based on the fields and methods of your class.
+     * <p>
+     * {@codesnippet IntrospectedBeanTest.Empty}
+     *
+     * <h5>Properties</h5>
+     *
+     * JavaFX properties are represented by various classes that implement
+     * {@link ReadOnlyProperty} interface. All non-private and {@code final} fields
+     * of your class are going to be registered. Derived properties are registered
+     * as bindings providing an {@link ObservableValue}. Constant properties
+     * are simple fields like {@code int}, {@code double} or {@link String}.
+     * <p>
+     *
+     * {@codesnippet IntrospectedBeanTest.Properties}
+     *
+     * All fields have to be {@code final} and must not be {@code private}!
+     *
+     * <h5>Actions</h5>
+     *
+     * Callback actions are defined as non-private instance methods that return
+     * {@link void} and accept no arguments or a single {@link ActionEvent}
+     * or {@link ActionDataEvent} argument.
+     * <p>
+     * {@codesnippet IntrospectedBeanTest.Actions}
+     *
+     * Avoid overloaded methods. Only one name can be used for an action
+     * and property per bean class.
+     *
+     * @since 0.6
+     */
     @Retention(RetentionPolicy.SOURCE)
     @Target(ElementType.TYPE)
-    public static @interface Introspect {
+    public static @interface Generate {
     }
 
     /**

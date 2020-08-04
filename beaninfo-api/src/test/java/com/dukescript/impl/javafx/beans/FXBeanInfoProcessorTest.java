@@ -36,31 +36,31 @@ public class FXBeanInfoProcessorTest {
     public FXBeanInfoProcessorTest() {
     }
 
-    @FXBeanInfo.Introspect
+    @FXBeanInfo.Generate
     @FXBeanInfoProcessor.ExpectError("Only use @Introspect on classes")
     public interface IntrospectedInterfaceError {
     }
 
-    @FXBeanInfo.Introspect
+    @FXBeanInfo.Generate
     @FXBeanInfoProcessor.ExpectError("Only use @Introspect on classes")
     public @interface IntrospectedAnnotationError {
     }
 
-    @FXBeanInfo.Introspect
+    @FXBeanInfo.Generate
     @FXBeanInfoProcessor.ExpectError("Class must extend another class. Try adding: extends BeanWithoutExtendsBeanInfo")
     public class BeanWithoutExtends {
     }
 
-    @FXBeanInfo.Introspect
+    @FXBeanInfo.Generate
     @FXBeanInfoProcessor.ExpectError("Class cannot be private")
     private static class PrivateClazz extends GenericBeanInfo {
     }
 
-    @FXBeanInfo.Introspect
+    @FXBeanInfo.Generate
     public static class Generic extends GenericBeanInfo {
     }
 
-    @FXBeanInfo.Introspect
+    @FXBeanInfo.Generate
     static class OverloadedProperties extends OverloadedPropertiesBeanInfo {
         @FXBeanInfoProcessor.ExpectError("text is defined multiple times")
         final StringProperty text = new SimpleStringProperty();

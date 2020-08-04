@@ -26,10 +26,15 @@ package com.dukescript.api.javafx.beans;
  * #L%
  */
 
+import java.util.Map;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import net.java.html.json.Models;
 import static org.junit.Assert.assertEquals;
@@ -39,7 +44,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class IntrospectedBeanTest {
-    @FXBeanInfo.Introspect
+    @FXBeanInfo.Generate
     static class SampleComponent extends SampleComponentBeanInfo {
         final BooleanProperty ok = new SimpleBooleanProperty(this, "ok", true);
         final StringProperty fine = new SimpleStringProperty(this, "fine", "ok");
@@ -67,6 +72,10 @@ public class IntrospectedBeanTest {
         void actionDataCallback(ActionDataEvent ev) {
             counter += ev.getProperty(Number.class, null).intValue();
             this.ev = ev;
+        }
+
+        int notAnAction() {
+            return 0;
         }
 
         static void ignore() {
@@ -104,6 +113,7 @@ public class IntrospectedBeanTest {
         assertNotNull(actionCallback = info.getActions().get("actionCallback"));
         EventHandlerProperty actionDataCallback;
         assertNotNull(actionDataCallback = info.getActions().get("actionDataCallback"));
+        assertNull(info.getActions().get("notAnAction"));
 
         bean.counter = 0;
         noArgCallback.getValue().handle(ev);
@@ -119,5 +129,92 @@ public class IntrospectedBeanTest {
         actionDataCallback.getValue().handle(ev);
         assertEquals("Plus five", 5, bean.counter);
         assertEquals("The event", bean.ev, ev);
+    }
+
+    // BEGIN: IntrospectedBeanTest.Empty
+    @FXBeanInfo.Generate
+    class Empty extends EmptyBeanInfo {
+        public Empty() {
+            assert this instanceof FXBeanInfo.Provider;
+            assert getFXBeanInfo() != null;
+        }
+    }
+    // END: IntrospectedBeanTest.Empty
+
+    @Test
+    public void checkEmpty() {
+        assertNotNull("Empty bean created", new Empty());
+    }
+
+    // BEGIN: IntrospectedBeanTest.Properties
+    @FXBeanInfo.Generate
+    class Properties extends PropertiesBeanInfo {
+        final StringProperty word = new SimpleStringProperty(this, "name");
+        final IntegerProperty count = new SimpleIntegerProperty(this, "count");
+        final boolean upperCase;
+        final ObservableValue<String> sentence;
+
+        public Properties(boolean upperCase) {
+            this.upperCase = upperCase;
+            this.sentence = Bindings.createStringBinding(() -> {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < count.get(); i++) {
+                    sb.append(word.get());
+                }
+                String text = sb.toString();
+                return upperCase ? text.toUpperCase() : text;
+            }, word, count);
+
+            FXBeanInfo info = getFXBeanInfo();
+            Map<String, ObservableValue<?>> p = info.getProperties();
+            assert p.get("word") != null;
+            assert p.get("count") != null;
+            assert p.get("upperCase") != null;
+            assert p.get("sentence") != null;
+        }
+    }
+    // END: IntrospectedBeanTest.Properties
+
+    @Test
+    public void checkPropertiesNormalCase() {
+        Properties normalCase = new Properties(false);
+        normalCase.count.set(3);
+        normalCase.word.set("Aa");
+        assertEquals("AaAaAa", normalCase.sentence.getValue());
+    }
+
+    @Test
+    public void checkPropertiesUpperCase() {
+        Properties upperCase = new Properties(true);
+        upperCase.count.set(3);
+        upperCase.word.set("Aa");
+        assertEquals("AAAAAA", upperCase.sentence.getValue());
+    }
+
+    // BEGIN: IntrospectedBeanTest.Actions
+    @FXBeanInfo.Generate
+    class Actions extends ActionsBeanInfo {
+        void init() {
+        }
+
+        void onAction(ActionEvent ev) {
+        }
+
+        void onActionWithData(ActionDataEvent ev) {
+        }
+
+        Actions() {
+            FXBeanInfo info = getFXBeanInfo();
+            Map<String, EventHandlerProperty> a = info.getActions();
+            assert a.get("init") != null;
+            assert a.get("onAction") != null;
+            assert a.get("onActionWithData") != null;
+        }
+    }
+    // END: IntrospectedBeanTest.Actions
+
+    @Test
+    public void checkActions() {
+        assertNotNull("Actions object created", new Actions());
     }
 }

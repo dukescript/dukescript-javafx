@@ -26,13 +26,11 @@ package com.dukescript.impl.javafx.beans;
  * #L%
  */
 
-import com.dukescript.api.javafx.beans.FXBeanInfo.Introspect;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +44,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -55,9 +52,11 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import org.openide.util.lookup.ServiceProvider;
+import com.dukescript.api.javafx.beans.FXBeanInfo.Generate;
+import javax.lang.model.type.TypeKind;
 
 @ServiceProvider(service = Processor.class)
-@SupportedAnnotationTypes("com.dukescript.api.javafx.beans.FXBeanInfo.Introspect")
+@SupportedAnnotationTypes("com.dukescript.api.javafx.beans.FXBeanInfo.Generate")
 public final class FXBeanInfoProcessor extends AbstractProcessor {
     @Override
     public SourceVersion getSupportedSourceVersion() {
@@ -68,7 +67,7 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         boolean[] ok = { true };
         TypeElement elementObject = processingEnv.getElementUtils().getTypeElement("java.lang.Object");
-        for (Element e : roundEnv.getElementsAnnotatedWith(Introspect.class)) {
+        for (Element e : roundEnv.getElementsAnnotatedWith(Generate.class)) {
             if (e.getKind() != ElementKind.CLASS) {
                 emitErrorOn(e, "Only use @Introspect on classes", ok);
                 continue;
@@ -227,8 +226,11 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
             if (e.getModifiers().contains(Modifier.STATIC)) {
                 continue;
             }
-
             ExecutableElement ee = (ExecutableElement) e;
+            if (ee.getReturnType().getKind() != TypeKind.VOID) {
+                continue;
+            }
+
             switch (ee.getParameters().size()) {
                 case 0:
                     break;

@@ -43,7 +43,7 @@ import com.dukescript.api.javafx.beans.FXBeanInfo;
 import javafx.event.ActionEvent;
 import net.java.html.json.Models;
 
-@FXBeanInfo.Introspect
+@FXBeanInfo.Generate
 final class DataModel extends DataModelBeanInfo {
     final ObjectProperty<String> message = new SimpleObjectProperty<>(this, "message");
     final ObservableValue<List<String>> words = Bindings.createObjectBinding(() -> {
@@ -107,7 +107,7 @@ final class DataModel extends DataModelBeanInfo {
         Models.applyBindings(ui);
     }
 
-    @FXBeanInfo.Introspect
+    @FXBeanInfo.Generate
     static final class HistoryElement extends HistoryElementBeanInfo {
         final String message;
 
