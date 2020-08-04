@@ -76,6 +76,10 @@
   </properties>
 
   <distributionManagement>
+      <repository>
+          <id>release</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      </repository>
       <snapshotRepository>
           <id>ossrh</id>
           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
