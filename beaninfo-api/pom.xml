@@ -185,11 +185,13 @@
               <executions>
                   <execution>
                       <goals>
+                          <goal>compare</goal>
                           <goal>generate</goal>
                       </goals>
                   </execution>
               </executions>
               <configuration>
+                  <releaseVersion>0.6</releaseVersion>
                   <packages>com.dukescript.api.javafx.beans,com.dukescript.spi.javafx.beans</packages>
               </configuration>
           </plugin>
@@ -239,6 +241,12 @@
         <artifactId>junit-browser-runner</artifactId>
         <scope>test</scope>
         <version>1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apidesign.bck2brwsr</groupId>
+        <artifactId>core</artifactId>
+        <scope>test</scope>
+        <version>0.30</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
