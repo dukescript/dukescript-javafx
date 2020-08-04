@@ -84,7 +84,7 @@ public final class FXBeanInfoProcessor extends AbstractProcessor {
             }
             final String clazzName = inPackageName(e);
             try {
-                final String parentName = parent.toString();
+                final String parentName = parent.toString().substring(parent.toString().lastIndexOf('.') + 1);
                 JavaFileObject src = processingEnv.getFiler().createSourceFile(pkg + "." + parentName, e);
                 Writer w = src.openWriter();
 
