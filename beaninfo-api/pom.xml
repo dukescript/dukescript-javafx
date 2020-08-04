@@ -31,7 +31,7 @@
 
   <groupId>com.dukescript.api</groupId>
   <artifactId>javafx.beaninfo</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.6</version>
   <packaging>bundle</packaging>
   <url>http://dukescript.com</url>
   <name>JavaFX BeanInfo API</name>
