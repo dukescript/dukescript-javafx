@@ -11,7 +11,8 @@ node ('Mac') {
             env.PATH="${env.PATH}:${env.GPG_DIR}"
         }
 
-        pom = readFile 'pom.xml'
+        // Use `mvn -f beaninfo-api/ versions:set -DnewVersion=x.y` before:
+        pom = readFile 'beaninfo-api/pom.xml'
         if (pom.contains('-SNAPSHOT</version>')) {
             mvnargs = ""
         } else {
